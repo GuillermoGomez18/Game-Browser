@@ -1,2 +1,2 @@
 # Game-Browser
-Pagina web sobre un buscador de videojuegos
+Pagina web sobre un buscador de videojuegoch jeje :3
