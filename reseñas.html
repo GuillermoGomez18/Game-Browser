@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameBrowser - Reseñas</title>
+    <style>
+        :root {
+            --azul-menu: #a0c4ff;
+            --blanco: #ffffff;
+            --gris-borde: #ccc;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Menú Lateral Coherente */
+        .sidebar {
+            width: 250px;
+            background-color: var(--azul-menu);
+            border-right: 1px solid #000;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #000;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        /* Contenido Principal */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            background-color: var(--blanco);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-small {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
+        .search-bar {
+            width: 80%;
+            max-width: 600px;
+            padding: 12px 20px;
+            border: 2px solid #000;
+            border-radius: 25px;
+            font-size: 16px;
+            margin: 0 auto 40px;
+            display: block;
+        }
+
+        /* Área de Reseña */
+        .review-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .game-info {
+            width: 150px;
+            text-align: center;
+        }
+
+        .game-info img {
+            width: 100%;
+            border: 1px solid #000;
+        }
+
+        .review-box {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #000;
+            padding: 10px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .btn-send {
+            align-self: flex-end;
+            margin-top: 15px;
+            padding: 10px 30px;
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-send:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="Loguin.html" class="sidebar-item">👤 Iniciar sesión / Perfil</a>
+        <a href="index.html" class="sidebar-item">🏠 Inicio</a>
+        <a href="reseñas.html" class="sidebar-item" style="font-weight: bold;">➕ Añadir reseña</a>
+        <a href="ayuda.html" class="sidebar-item">❓ Ayuda</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header-section">
+            <img src="https://media.giphy.com/media/v2ray9vYVRH6KllAog/giphy.gif" class="logo-small" alt="Logo">
+            <h1>Game Browser</h1>
+            <input type="text" class="search-bar" placeholder="🔍 Buscar juego para reseñar...">
+        </div>
+
+        <h2>Reseñas</h2>
+        <div class="review-container">
+            <div class="game-info">
+                <img src="https://m.media-amazon.com/images/I/81v7W54mXJL._AC_SL1500_.jpg" alt="Persona 5">
+                <p><strong>Persona 5 Royal</strong></p>
+            </div>
+            <div class="review-box">
+                <textarea placeholder="Escribe aquí tu reseña sobre el juego..."></textarea>
+                <button class="btn-send" onclick="alert('¡Reseña enviada con éxito!')">enviar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
