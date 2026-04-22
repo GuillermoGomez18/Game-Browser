@@ -5,29 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Browser | Ayuda</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .sidebar { transition: all 0.4s ease; }
+        .sidebar.hidden { margin-left: -250px; }
+        .btn-open-sidebar {
+            position: fixed; left: 10px; top: 15px; z-index: 50;
+            font-size: 24px; cursor: pointer; background: #a0c4ff;
+            border: 1px solid black; border-radius: 5px; display: none; 
+        }
+        .sidebar.hidden + .btn-open-sidebar { display: block; }
+    </style>
 </head>
 <body class="pagina-ayuda">
 
     <div class="app-container">
-
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <a href="Loguin.html" class="menu-item">👤 Iniciar sesion / Perfil</a>    
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
+                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
+                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                </div>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item active">❓ Ayuda</a>
             </div>
         </aside>
+        
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
 
         <main class="main-content">
-            
             <header class="top-header">
-                <div class="logo-area">
-                    <h2>Game Browser</h2>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="🔍 Buscar en ayuda...">
-                </div>
+                <div class="logo-area"><h2>Game Browser</h2></div>
+                <div class="search-bar"><input type="text" placeholder="🔍 Buscar en ayuda..."></div>
             </header>
 
             <section class="contenido-seccion">
@@ -37,30 +47,97 @@
                 <div class="help-grid">
                     <div class="help-card">
                         <h3>Preguntas Frecuentes</h3>
-                        <p>Cómo crear una cuenta, recuperar contraseña y gestionar tu perfil.</p>
+                        <p>Gestión de cuenta y perfil.</p>
                     </div>
                     <div class="help-card">
                         <h3>Guía de Reseñas</h3>
-                        <p>Aprende a publicar reseñas de calidad y cómo funciona el sistema de búsqueda.</p>
+                        <p>Cómo publicar contenido de calidad.</p>
                     </div>
                     <div class="help-card">
                         <h3>Problemas Técnicos</h3>
-                        <p>Reporta fallos en la carga de juegos o errores en la interfaz.</p>
+                        <p>Reporta fallos en la interfaz.</p>
                     </div>
                 </div>
 
                 <div class="contact-form">
                     <h2>Contactar con Soporte</h2>
-                    <form onsubmit="event.preventDefault(); alert('Mensaje enviado. Te contactaremos pronto.');">
-                        <input type="text" placeholder="Asunto del problema" required>
-                        <textarea placeholder="Describe detalladamente tu problema aquí..." rows="5" required></textarea>
-                        <button type="submit" class="btn-support">Enviar Ticket de Soporte</button>
+                    <form id="soporteForm">
+                        <input type="text" id="asunto" placeholder="Asunto del problema" required>
+                        <textarea id="mensaje" placeholder="Describe detalladamente tu problema aquí..." rows="5" required></textarea>
+                        <button type="submit" class="btn-support">Enviar Ticket y Descargar PDF</button>
                     </form>
                 </div>
             </section>
-
         </main>
     </div>
 
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.toggle('hidden');
+        }
+
+        window.onload = function() {
+            const display = document.getElementById('user-link');
+            const user = localStorage.getItem('usuarioLogueado');
+            if (user && display) {
+                display.innerHTML = `👤 Hola, ${user}`;
+                display.href = "#"; 
+            }
+        };
+
+        // Lógica para generar el PDF Profesional
+        document.getElementById('soporteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const user = localStorage.getItem('usuarioLogueado') || "Usuario Invitado";
+            const asunto = document.getElementById('asunto').value;
+            const mensaje = document.getElementById('mensaje').value;
+            const fecha = new Date().toLocaleString();
+
+            const doc = new jsPDF();
+
+            // Configuración estética del PDF
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.text("GAME BROWSER - TICKET DE SOPORTE", 105, 20, { align: "center" });
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("Universidad Estatal de Sonora (UES)", 105, 30, { align: "center" });
+            doc.text("Dirección: Ley Federal del Trabajo s/n, Col. Apolo, Hermosillo, Sonora.", 105, 35, { align: "center" });
+            
+            doc.line(20, 40, 190, 40); // Línea divisoria
+
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Información del Usuario:", 20, 55);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nombre: ${user}`, 20, 65);
+            doc.text(`Fecha de reporte: ${fecha}`, 20, 72);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Detalles del Reporte:", 20, 85);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Asunto: ${asunto}`, 20, 95);
+            
+            doc.text("Mensaje:", 20, 105);
+            // El texto se ajusta automáticamente al ancho del PDF
+            const splitText = doc.splitTextToSize(mensaje, 170);
+            doc.text(splitText, 20, 115);
+
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "italic");
+            doc.text("Gracias por contactarnos. Nuestro equipo revisará su caso pronto.", 105, 280, { align: "center" });
+
+            // Descarga el archivo
+            doc.save(`Ticket_Soporte_${user}.pdf`);
+            
+            alert('¡Ticket generado! El PDF se ha descargado correctamente.');
+            this.reset(); // Limpia el formulario
+        });
+    </script>
 </body>
 </html>

@@ -5,28 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GameBrowser - Registro</title>
     <style>
-        :root { --azul: #a0c4ff; }
-        body { font-family: Arial; background: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: var(--azul); padding: 50px; border: 2px solid #000; border-radius: 15px; width: 500px; text-align: center; }
-        h2 { margin-bottom: 30px; }
-        input { width: 90%; padding: 12px; margin-bottom: 20px; border: 2px solid #000; border-radius: 5px; }
-        .btn-register { background: #000; color: #fff; padding: 15px 40px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
-        .back-link { display: block; margin-top: 20px; color: #0033aa; text-decoration: none; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: #a0c4ff;
+            padding: 40px;
+            border: 2px solid #000;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        h2 { margin-bottom: 25px; font-weight: normal; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn-register {
+            background: #000;
+            color: #fff;
+            padding: 12px 35px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #0033aa;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
     <h2>Crear Nueva Cuenta</h2>
-    <form onsubmit="event.preventDefault(); alert('Cuenta creada con éxito. Ahora inicia sesión.'); window.location.href='index.html';">
-        <input type="text" placeholder="Nombre de usuario" required>
-        <input type="email" placeholder="Correo electrónico" required>
-        <input type="password" placeholder="Contraseña" required>
-        <input type="password" placeholder="Confirmar contraseña" required>
+    <form id="registroForm">
+        <input type="text" id="regUser" placeholder="Nombre de usuario" required>
+        <input type="email" id="regEmail" placeholder="Correo electrónico" required>
+        <input type="password" id="regPass" placeholder="Contraseña" required>
+        <input type="password" id="regConfirm" placeholder="Confirmar contraseña" required>
         <button type="submit" class="btn-register">Registrarse</button>
     </form>
     <a href="Loguin.html" class="back-link">¿Ya tienes cuenta? Volver al login</a>
 </div>
 
+<script>
+    document.getElementById('registroForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('regUser').value;
+        const pass = document.getElementById('regPass').value;
+        const confirm = document.getElementById('regConfirm').value;
+
+        if (pass !== confirm) {
+            alert("Las contraseñas no coinciden.");
+            return;
+        }
+
+        const usuarios = JSON.parse(localStorage.getItem('usuariosApp')) || [];
+        usuarios.push({ nombre: nombre, pass: pass });
+        localStorage.setItem('usuariosApp', JSON.stringify(usuarios));
+
+        alert('¡Cuenta creada! Inicia sesión ahora.');
+        window.location.href = 'Loguin.html';
+    });
+</script>
 </body>
 </html>

@@ -5,22 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Browser | Reseñas</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ANIMACIÓN Y ESTRUCTURA */
+        .app-container {
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #a0c4ff; /* El azul de tus wireframes */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 100;
+        }
+
+        /* Cuando se esconde, se desliza a la izquierda */
+        .sidebar.hidden {
+            margin-left: -250px;
+        }
+
+        /* Botón de las 3 rayas cuando la barra está ABIERTA */
+        .btn-toggle-inside {
+            cursor: pointer;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: black;
+        }
+
+        /* Botón que aparece cuando la barra está CERRADA */
+        .btn-open-sidebar {
+            position: fixed;
+            left: 10px;
+            top: 15px;
+            z-index: 50;
+            font-size: 24px;
+            cursor: pointer;
+            background: #a0c4ff;
+            border: 1px solid black;
+            border-radius: 5px;
+            display: none; /* Escondido por defecto */
+        }
+
+        .sidebar.hidden + .btn-open-sidebar {
+            display: block; /* Solo se ve si la sidebar está escondida */
+        }
+
+        .main-content {
+            flex-grow: 1;
+            transition: margin-left 0.4s ease;
+        }
+    </style>
 </head>
 <body class="pagina-resenas">
 
     <div class="app-container">
-
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <a href="Loguin.html" class="menu-item">👤 Iniciar sesion / Perfil</a>    
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
+                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
+                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                </div>
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
                 <a href="reseñas.html" class="menu-item active">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
         </aside>
 
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
+
         <main class="main-content">
-            
             <header class="top-header">
                 <div class="logo-area">
                     <h2>Game Browser</h2>
@@ -32,7 +88,6 @@
 
             <section class="contenido-seccion">
                 <h2 class="titulo-seccion">Reseñas</h2>
-                
                 <div class="review-container">
                     <div class="game-info">
                         <img src="img/persona5_royal.jpg" alt="Persona 5 Royal">
@@ -40,13 +95,30 @@
                     </div>
                     <div class="review-box">
                         <textarea placeholder="Escribe aquí tu reseña sobre el juego..."></textarea>
-                        <button class="btn-send" onclick="alert('¡Reseña enviada con éxito!')">enviar</button>
+                        <button class="btn-send" onclick="alert('Reseña enviada')">enviar</button>
                     </div>
                 </div>
             </section>
-
         </main>
     </div>
 
+    <script>
+        // Función para abrir/cerrar con animación
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        }
+
+        // Función que detecta al usuario al cargar
+        window.onload = function() {
+            const display = document.getElementById('user-link');
+            // Buscamos lo que guardó el LOGIN
+            const user = localStorage.getItem('usuarioLogueado');
+
+            if (user) {
+                display.innerHTML = `👤 Hola, ${user}`;
+                display.href = "#"; // Ya no necesita ir al login
+            }
+        };
+    </script>
 </body>
 </html>

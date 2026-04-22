@@ -5,22 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Browser | Inicio</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Agregamos esto para asegurar que el botón de apertura funcione */
+        .btn-open-sidebar {
+            position: fixed;
+            left: 10px;
+            top: 15px;
+            z-index: 50;
+            font-size: 24px;
+            cursor: pointer;
+            background: #a0c4ff;
+            border: 1px solid black;
+            border-radius: 5px;
+            display: none; 
+        }
+
+        /* Si el sidebar tiene la clase hidden, mostramos el botón de afuera */
+        .sidebar.hidden + .btn-open-sidebar {
+            display: block;
+        }
+        
+        /* Aseguramos la animación en el CSS */
+        .sidebar {
+            transition: all 0.4s ease;
+        }
+
+        .sidebar.hidden {
+            margin-left: -250px;
+        }
+    </style>
 </head>
 <body class="pagina-inicio">
 
     <div class="app-container">
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <a href="Loguin.html" class="menu-item">👤 Iniciar sesion / Perfil</a>    
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
+                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
+                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                </div>    
                 <a href="index.html" class="menu-item active">🏠 Inicio</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
         </aside>
 
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
+
         <main class="main-content">
-            
             <header class="top-header">
                 <div class="logo-area">
                     <h2>Game Browser</h2>
@@ -32,10 +65,8 @@
 
             <section class="novedades-section">
                 <h3>Novedades</h3>
-                
                 <div class="grid-juegos">
-                    
-                        <a href="InformacionJuego.html" class="juego-card" style="text-decoration: none; color: inherit;">
+                    <a href="InformacionJuego.html" class="juego-card" style="text-decoration: none; color: inherit;">
                         <div class="imagen-placeholder">
                             <img src="img/persona-persona5.webp" alt="Persona 5">
                         </div>
@@ -43,8 +74,7 @@
                             <h4>Persona 5 Royal</h4>
                             <p>RPG, PS5, PC, XBOX SERIES X/S, SWITCH</p>
                         </div>
-                        </a>
-                
+                    </a>
 
                     <article class="juego-card">
                         <div class="imagen-placeholder">
@@ -78,8 +108,25 @@
                 </div>
             </section>
         </main>
-
     </div>
 
+    <script>
+        function toggleMenu() {
+            const side = document.getElementById('sidebar');
+            if (side) {
+                side.classList.toggle('hidden');
+            }
+        }
+
+        window.onload = function() {
+            const display = document.getElementById('user-link');
+            const user = localStorage.getItem('usuarioLogueado');
+
+            if (user && display) {
+                display.innerHTML = `👤 Hola, ${user}`;
+                display.href = "#"; 
+            }
+        };
+    </script>
 </body>
 </html>

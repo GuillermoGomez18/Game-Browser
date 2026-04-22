@@ -332,3 +332,5 @@ body {
         width: 100%;
     }
 }
+.sidebar.hidden { display: none; } 
+/* O si prefieres que se deslice: margin-left: -250px; */

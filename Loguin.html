@@ -213,19 +213,30 @@
 </div>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const user = document.getElementById('user').value;
-        const pass = document.getElementById('pass').value;
+  
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const userValue = document.getElementById('user').value.toLowerCase(); // Convertimos a minúsculas para evitar errores
+    const passValue = document.getElementById('pass').value;
 
-        if(user === "admin" && pass === "1234") {
-            alert("¡Bienvenido!");
-            window.location.href = "index.html";
-        } else {
-            alert("Credenciales incorrectas (Prueba admin / 1234)");
-        }
-    });
+    // Lista de usuarios autorizados
+    const usuariosPermitidos = ["admin", "guillermo", "miguel", "fco"];
     
+    // 1. Verificar si es uno de los usuarios predefinidos
+    // 2. Verificar si es un usuario que se registró recién (buscando en localStorage)
+    const usuariosRegistrados = JSON.parse(localStorage.getItem('usuariosApp')) || [];
+    const usuarioNuevo = usuariosRegistrados.find(u => u.nombre.toLowerCase() === userValue && u.pass === passValue);
+
+    if ((usuariosPermitidos.includes(userValue) && passValue === "1234") || usuarioNuevo) {
+        // Guardamos el nombre para que aparezca en el Sidebar azul [cite: 2]
+        localStorage.setItem('usuarioLogueado', userValue); 
+        
+        alert("¡Bienvenido a GameBrowser!");
+        window.location.href = "index.html"; 
+    } else {
+        alert("Credenciales incorrectas. Prueba con admin, guillermo, miguel o fco (Pass: 1234)");
+    }
+});
 </script>
 
 </body>
