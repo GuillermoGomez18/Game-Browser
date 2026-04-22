@@ -1,4 +1,6 @@
-/* Reseteo básico */
+/* =========================================
+   RESETEO Y LAYOUT BASE
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +13,6 @@ body {
     color: #333;
 }
 
-/* Layout principal usando Flexbox */
 .app-container {
     display: flex;
     min-height: 100vh;
@@ -20,9 +21,10 @@ body {
 /* --- Barra Lateral --- */
 .sidebar {
     width: 250px;
-    background-color: #8ab6f9; /* Azul claro del wireframe */
+    background-color: #8ab6f9;
     border-right: 2px solid #5a8cd9;
     padding: 20px 0;
+    flex-shrink: 0;
 }
 
 .menu-item {
@@ -40,14 +42,13 @@ body {
     font-weight: bold;
 }
 
-/* --- Contenido Principal --- */
+/* --- Contenido Principal y Header --- */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-/* Header superior */
 .top-header {
     display: flex;
     align-items: center;
@@ -69,7 +70,9 @@ body {
     font-size: 16px;
 }
 
-/* Sección de novedades */
+/* =========================================
+   DISEÑO 1: PÁGINA DE INICIO (Novedades)
+   ========================================= */
 .novedades-section {
     padding: 40px;
 }
@@ -80,58 +83,230 @@ body {
     font-weight: normal;
 }
 
-/* Grid para las tarjetas (Wireframe muestra 3 columnas) */
-.grid-juegos {
+.pagina-inicio .grid-juegos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tarjetas de buen tamaño */
+    gap: 25px;
 }
 
-.juego-card {
+.pagina-inicio .juego-card {
     background: #fff;
     border: 2px solid #333;
     display: flex;
-    height: 120px;
+    min-height: 120px; /* Crece si el texto es muy largo */
+    overflow: hidden;
 }
 
-.imagen-placeholder {
+.pagina-inicio .imagen-placeholder {
     width: 40%;
-    background-color: #e0e0e0;
+    flex-shrink: 0; /* Evita que las imágenes anchas aplasten el texto */
     border-right: 2px solid #333;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
-    position: relative;
+    background-color: #000;
 }
 
-/* La 'X' del wireframe dentro de la imagen */
-.imagen-placeholder::before, .imagen-placeholder::after {
-    content: '';
-    position: absolute;
+.pagina-inicio .imagen-placeholder img {
     width: 100%;
-    height: 1px;
-    background-color: #333;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
 }
-.imagen-placeholder::before { transform: rotate(45deg); }
-.imagen-placeholder::after { transform: rotate(-45deg); }
 
-.info {
+.pagina-inicio .info {
     padding: 15px;
-    width: 60%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
 }
 
-.info h4 { font-size: 16px; margin-bottom: 5px; }
-.info p { font-size: 12px; color: #666; }
+.pagina-inicio .info h4 { font-size: 16px; margin-bottom: 5px; }
+.pagina-inicio .info p { font-size: 12px; color: #666; }
 
-/* --- Media Query para Celulares --- */
+
+/* =========================================
+   DISEÑO 2: PÁGINA DE INFO (Nombre, póster e info)
+   ========================================= */
+.info-juego-section {
+    padding: 40px;
+}
+
+.titulo-juego {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.contenedor-info-layout {
+    display: flex;
+    gap: 40px; /* Separación entre la imagen y el recuadro derecho */
+    width: 100%;
+    max-width: 1000px; /* Para que no se estire de forma fea en pantallas gigantes */
+}
+
+/* Lado izquierdo (Póster) */
+.poster-juego {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.poster-juego img {
+    width: 100%;
+    aspect-ratio: 3 / 4; /* Mantiene proporción de portada vertical */
+    object-fit: cover;
+    border: 2px solid #333;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.genero-etiqueta {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+/* Lado derecho (Recuadro de información) */
+.recuadro-informacion {
+    flex: 1;
+    border: 2px solid #333; /* El recuadro que marca el wireframe */
+    background: #fff;
+    padding: 30px;
+    height: fit-content; /* Se ajusta al texto que tenga adentro */
+}
+
+.recuadro-informacion p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+/* =========================================
+   DISEÑO 3: PÁGINAS DE RESEÑAS Y AYUDA
+   ========================================= */
+.contenido-seccion {
+    padding: 40px;
+}
+
+.titulo-seccion {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.subtitulo {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* --- Estilos de Reseñas --- */
+.review-container {
+    border: 2px solid #333;
+    padding: 30px;
+    display: flex;
+    gap: 30px;
+    background: #fff;
+}
+
+.game-info {
+    width: 200px;
+    text-align: center;
+}
+
+.game-info img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    border: 2px solid #333;
+    margin-bottom: 10px;
+}
+
+.review-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.review-box textarea {
+    width: 100%;
+    height: 200px;
+    border: 2px solid #ccc;
+    padding: 15px;
+    resize: none;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.btn-send {
+    align-self: flex-end;
+    margin-top: 15px;
+    padding: 10px 30px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn-send:hover { background-color: #555; }
+
+/* --- Estilos de Ayuda --- */
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.help-card {
+    border: 2px solid #5a8cd9;
+    padding: 20px;
+    background-color: #fff;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.help-card:hover {
+    background-color: #e6f0ff;
+    transform: translateY(-3px);
+}
+
+.help-card h3 { margin-bottom: 10px; }
+
+.contact-form {
+    margin-top: 50px;
+    background-color: #fff;
+    padding: 30px;
+    border: 2px solid #ccc;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0 20px 0;
+    border: 2px solid #ccc;
+    font-family: inherit;
+}
+
+.btn-support {
+    background-color: #333;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* =========================================
+   RESPONSIVE (Celulares)
+   ========================================= */
 @media screen and (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-    }
+    .app-container { flex-direction: column; }
     .sidebar {
         width: 100%;
         border-right: none;
@@ -146,7 +321,14 @@ body {
         width: 100%;
         margin-top: 15px;
     }
-    .grid-juegos {
-        grid-template-columns: 1fr; /* Una sola columna en celular */
+    .pagina-inicio .grid-juegos { grid-template-columns: 1fr; }
+    
+    /* En celular, la página de info pone la imagen arriba y el texto abajo */
+    .contenedor-info-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+    .recuadro-informacion {
+        width: 100%;
     }
 }

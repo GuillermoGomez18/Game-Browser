@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Browser | Reseñas</title>
+    <title>Game Browser | Info</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="pagina-resenas">
+<body class="pagina-info">
 
     <div class="app-container">
 
@@ -14,7 +14,7 @@
             <div class="sidebar-menu">
                 <a href="Loguin.html" class="menu-item">👤 Iniciar sesion / Perfil</a>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
-                <a href="reseñas.html" class="menu-item active">➕ Añadir reseña</a>
+                <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
         </aside>
@@ -26,26 +26,30 @@
                     <h2>Game Browser</h2>
                 </div>
                 <div class="search-bar">
-                    <input type="text" placeholder="🔍 Buscar juego para reseñar...">
+                    <input type="text" placeholder="🔍 Buscar juego...">
                 </div>
             </header>
 
-            <section class="contenido-seccion">
-                <h2 class="titulo-seccion">Reseñas</h2>
+            <section class="info-juego-section">
+                <h2 class="titulo-juego">Persona 5 Royal</h2>
                 
-                <div class="review-container">
-                    <div class="game-info">
+                <div class="contenedor-info-layout">
+                    
+                    <div class="poster-juego">
                         <img src="img/persona5_royal.jpg" alt="Persona 5 Royal">
-                        <p><strong>Persona 5 Royal</strong></p>
+                        <p class="genero-etiqueta">RPG, PlayStation, PC, Switch</p>
                     </div>
-                    <div class="review-box">
-                        <textarea placeholder="Escribe aquí tu reseña sobre el juego..."></textarea>
-                        <button class="btn-send" onclick="alert('¡Reseña enviada con éxito!')">enviar</button>
+
+                    <div class="recuadro-informacion">
+                        <p><strong>Desarrollador:</strong> Atlus</p>
+                        <br>
+                        <p><strong>Información del juego:</strong> Ponte la máscara y únete a los Ladrones Fantasma de Corazones en esta épica aventura RPG. Explora Tokio, haz nuevos amigos y cambia la sociedad corrompida.</p>
                     </div>
+
                 </div>
             </section>
-
         </main>
+
     </div>
 
 </body>
