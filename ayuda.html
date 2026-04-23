@@ -23,7 +23,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
-                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
+                    <a href="perfil.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
                     <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
                 </div>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
@@ -84,7 +84,7 @@
             const user = localStorage.getItem('usuarioLogueado');
             if (user && display) {
                 display.innerHTML = `👤 Hola, ${user}`;
-                display.href = "#"; 
+                display.href = "perfil.html";
             }
         };
 

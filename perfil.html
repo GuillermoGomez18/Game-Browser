@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Browser | Mi Perfil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .profile-container { padding: 40px; max-width: 800px; margin: auto; }
+        .user-card { border: 2px solid black; padding: 20px; background: #f9f9f9; border-radius: 8px; margin-bottom: 20px; }
+        .review-item { border-left: 5px solid #a0c4ff; padding: 10px; margin: 10px 0; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .btn-clear { background: #ffadad; border: 1px solid black; cursor: pointer; padding: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div style="display: flex;">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-menu">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
+                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
+                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                </div>    
+                <a href="index.html" class="menu-item">🏠 Inicio</a>
+                <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
+                <a href="ayuda.html" class="menu-item active">❓ Ayuda</a>
+                <a href="Loguin.html"></a><button onclick="cerrarSesion()" class="btn-clear">Cerrar Sesión</button></a>
+        </aside>
+            </div>
+        </aside>
+
+        <main style="flex-grow: 1; padding: 20px;">
+            <div class="profile-container">
+                <div class="user-card">
+                    <h1 id="welcome-user">Cargando perfil...</h1>
+                    <p id="user-email">Correo: usuario@ues.mx</p>
+                </div>
+
+                <h3>📝 Mis Reseñas Publicadas</h3>
+                <div id="contenedor-resenas">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const currentUser = localStorage.getItem('usuarioLogueado');
+
+        if (!currentUser) {
+            window.location.href = "Loguin.html";
+        }
+
+        document.getElementById('welcome-user').innerText = `Perfil de ${currentUser}`;
+
+        function cargarResenas() {
+            const listaResenas = JSON.parse(localStorage.getItem('misResenas')) || [];
+            const contenedor = document.getElementById('contenedor-resenas');
+            
+            // Filtrar reseñas que pertenezcan al usuario logueado
+            const misResenas = listaResenas.filter(r => r.usuario === currentUser);
+
+            if (misResenas.length === 0) {
+                contenedor.innerHTML = "<p>Aún no has escrito ninguna reseña.</p>";
+                return;
+            }
+
+            contenedor.innerHTML = misResenas.map(r => `
+                <div class="review-item">
+                    <strong>🎮 ${r.juego}</strong> <small>(${r.fecha})</small>
+                    <p>"${r.contenido}"</p>
+                </div>
+            `).join('');
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('usuarioLogueado');
+            window.location.href = "Loguin.html";
+        }
+
+        window.onload = cargarResenas;
+    </script>
+</body>
+</html>

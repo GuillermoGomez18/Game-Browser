@@ -101,24 +101,54 @@
             </section>
         </main>
     </div>
-
     <script>
-        // Función para abrir/cerrar con animación
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('hidden');
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('hidden');
+    }
+
+    // Al cargar la página
+    window.onload = function() {
+        const display = document.getElementById('user-link');
+        const user = localStorage.getItem('usuarioLogueado');
+
+        if (user) {
+            display.innerHTML = `👤 Hola, ${user}`;
+            display.href = "perfil.html"; // Ahora apunta al perfil
+        }
+    };
+
+    function guardarResena() {
+        const texto = document.querySelector('textarea').value;
+        const user = localStorage.getItem('usuarioLogueado') || "Anónimo";
+        const juego = "Persona 5 Royal"; // En el futuro esto puede ser dinámico
+
+        if (texto.trim() === "") {
+            alert("¡No puedes enviar una reseña vacía!");
+            return;
         }
 
-        // Función que detecta al usuario al cargar
-        window.onload = function() {
-            const display = document.getElementById('user-link');
-            // Buscamos lo que guardó el LOGIN
-            const user = localStorage.getItem('usuarioLogueado');
+        // 1. Obtener reseñas previas o crear un array vacío
+        let resenas = JSON.parse(localStorage.getItem('misResenas')) || [];
 
-            if (user) {
-                display.innerHTML = `👤 Hola, ${user}`;
-                display.href = "#"; // Ya no necesita ir al login
-            }
+        // 2. Agregar la nueva reseña con fecha
+        const nuevaResena = {
+            usuario: user,
+            juego: juego,
+            contenido: texto,
+            fecha: new Date().toLocaleDateString()
         };
-    </script>
+
+        resenas.push(nuevaResena);
+
+        // 3. Guardar de nuevo en LocalStorage
+        localStorage.setItem('misResenas', JSON.stringify(resenas));
+
+        alert('¡Reseña guardada localmente!');
+        document.querySelector('textarea').value = ""; // Limpiar campo
+    }
+</script>
+
+    
+    
 </body>
 </html>
