@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Browser | Consolas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-detalle">
+    <!-- Barra de Navegación Móvil -->
+    <div class="nav-control-header">
+        <button class="btn-menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+        <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-menu">
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Perfil</a>
+                </div>    
+                <a href="index.html" class="menu-item">🏠 Inicio</a>
+                <a href="busqueda.html" class="menu-item">🎮 Juegos</a>
+                <a href="consolas.html" class="menu-item active">🕹️ Consolas</a>
+                <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
+            </div>
+        </aside>
+
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="logo-area-inline">
+                    <div class="profile-mini-gif">
+                        <img src="img/logo1.webp" alt="Avatar">
+                    </div>
+                    <h1>GAMEBROWSER</h1>
+                </div>
+            </header>
+
+            <section class="game-selected-section">
+                <h2 class="section-title">Plataformas Disponibles</h2>
+                <!-- Aquí se cargarán las consolas dinámicamente -->
+                <div class="resultados-grid" id="contenedor-consolas">
+                    <p style="text-align: center; color: var(--azul-primario);">Sincronizando con base de datos de Ingeniería...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // Función para el menú lateral
+        function toggleMenu() { 
+            document.getElementById('sidebar').classList.toggle('hidden'); 
+        }
+
+        // Mostrar nombre de usuario logueado
+        window.onload = function() {
+            const display = document.getElementById('user-link');
+            const user = localStorage.getItem('usuarioLogueado');
+            if (user && display) {
+                display.innerHTML = `👤 Hola, ${user}`; 
+            }
+            cargarConsolas(); // Llamar a la API al cargar
+        };
+
+        // LLAMADA A LA API PARA CONSOLAS
+        async function cargarConsolas() {
+            const API_KEY = '87246c155ff944ebbe403cb842778903'; // Reemplaza con tu clave de RAWG
+            const url = `https://api.rawg.io/api/platforms?key=${API_KEY}`;
+            const contenedor = document.getElementById('contenedor-consolas');
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                contenedor.innerHTML = ''; // Limpiar mensaje de carga
+
+                // Filtrar las consolas más importantes (PS5, Xbox, Switch, PC)
+                data.results.slice(0, 8).forEach(plataforma => {
+                    const card = document.createElement('div');
+                    card.className = 'juego-card'; // Usamos tu clase de CSS para diseño consistente
+                    
+                    card.innerHTML = `
+                        <div class="game-card-img">
+                            <img src="${plataforma.image_background}" alt="${plataforma.name}">
+                        </div>
+                        <div class="info">
+                            <h4>${plataforma.name}</h4>
+                            <p>Juegos registrados: ${plataforma.games_count}</p>
+                            <button class="btn-submit-main" 
+        style="width: 100%; margin-top: 10px;" 
+        onclick="explorarPlataforma(${plataforma.id})">
+    Explorar
+</button>
+
+                        </div>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error al cargar plataformas:", error);
+                contenedor.innerHTML = '<p>Error al conectar con el servidor de Ingeniería.</p>';
+            }
+        }
+        function explorarPlataforma(id) {
+    window.location.href = `busqueda.html?platform=${id}`;
+}
+    </script>
+</body>
+</html>

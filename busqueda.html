@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Browser | Búsqueda</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-busqueda">
+    <div class="nav-control-header">
+    <button class="btn-menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+    <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+</div>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-menu">
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Perfil</a>
+                   
+                </div>    
+                <a href="index.html" class="menu-item">🏠 Inicio</a>
+                <a href="busqueda.html" class="menu-item active">🎮 Juegos</a>
+                <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
+                <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
+            </div>
+        </aside>
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
+
+        <main class="main-content" id="main-content">
+            <header class="top-header">
+                <div class="logo-area-inline">
+                    <div class="profile-mini-gif"><img src="img/logo1.webp"></div>
+                    <h1>Gamebrowser</h1>
+                </div>
+                <!-- Buscador Modernizado y Corregido -->
+                <div class="search-bar-container">
+                    <div class="search-bar-modern">
+                        <input type="text" id="searchInput" placeholder="Buscar juego real...">
+                        <button class="btn-search-pro" onclick="realizarBusqueda(document.getElementById('searchInput').value)">🔍 Buscar</button>
+                    </div>
+                </div>
+            </header>
+
+            <section class="resultados-section">
+                <h2 class="section-title" id="titulo-busqueda">Explorar Catálogo</h2>
+                
+                <!-- Barra de Filtros por Categorías -->
+                <div class="categorias-filter">
+                    <button class="btn-filter" onclick="filtrarPorCategoria('action')">Acción</button>
+                    <button class="btn-filter" onclick="filtrarPorCategoria('indie')">Indie</button>
+                    <button class="btn-filter" onclick="filtrarPorCategoria('adventure')">Aventura</button>
+                    <button class="btn-filter" onclick="filtrarPorCategoria('role-playing-games-rpg')">RPG</button>
+                    <button class="btn-filter" onclick="filtrarPorCategoria('shooter')">Shooter</button>
+                    <button class="btn-filter" onclick="filtrarPorCategoria('sports')">Deportes</button>
+                </div>
+
+                <div class="resultados-grid" id="contenedor-resultados">
+                    <!-- Los juegos de la API se cargarán aquí -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const API_KEY = '87246c155ff944ebbe403cb842778903';
+
+        async function realizarBusqueda(queryManual) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = queryManual || urlParams.get('query') || "action";
+            
+            document.getElementById('titulo-busqueda').innerText = `Resultados para: ${query}`;
+            
+            // Si el query es una categoría de botón, usamos el filtro de genres, si no, usamos search
+            let url = `https://api.rawg.io/api/games?key=${API_KEY}&search=${query}&page_size=24`;
+            
+            fetchData(url);
+        }
+
+        async function filtrarPorCategoria(slug) {
+            document.getElementById('titulo-busqueda').innerText = `Categoría: ${slug.toUpperCase()}`;
+            let url = `https://api.rawg.io/api/games?key=${API_KEY}&genres=${slug}&page_size=24`;
+            fetchData(url);
+        }
+
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const contenedor = document.getElementById('contenedor-resultados');
+                contenedor.innerHTML = '';
+
+                data.results.forEach(juego => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card-result';
+                    card.innerHTML = `
+                        <div class="game-card-img">
+                            <img src="${juego.background_image || 'img/no-image.jpg'}" alt="${juego.name}">
+                        </div>
+                        <div class="game-card-info">
+                            <h3>${juego.name}</h3>
+                            <div class="game-meta">
+                                <span>📅 ${juego.released ? juego.released.split('-')[0] : 'N/A'}</span>
+                                <span>⭐ ${juego.rating}</span>
+                            </div>
+                            <button class="btn-view-details" onclick="verDetalle(${juego.id})">Ver ficha técnica</button>
+                        </div>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error al obtener datos:", error);
+            }
+        }
+
+        function verDetalle(id) {
+            localStorage.setItem('juegoSeleccionadoID', id);
+            window.location.href = 'InformacionJuego.html';
+        }
+
+        function toggleMenu() {
+    const side = document.getElementById('sidebar');
+    const main = document.getElementById('main-content'); // Asegúrate que tu <main> tenga este ID
+    side.classList.toggle('hidden');
+    main.classList.toggle('full-width');
+}
+        // Permitir buscar con la tecla Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') realizarBusqueda(document.getElementById('searchInput').value);
+        });
+
+        window.onload = () => realizarBusqueda();
+    </script>
+</body>
+</html>

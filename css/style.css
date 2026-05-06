@@ -1,336 +1,261 @@
-/* =========================================
-   RESETEO Y LAYOUT BASE
-   ========================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+/* ==========================================================
+   GAMEBROWSER MASTER STYLESHEET - FINAL VERSION
+   Diseño de Ingeniería en Software - Estética Gamer/Dark
+   ========================================================== */
+
+/* --- 1. CONFIGURACIÓN CORE Y ANIMACIONES --- */
+:root {
+    --azul-primario: #a0c4ff;
+    --azul-glow: rgba(160, 196, 255, 0.4);
+    --oscuro-fondo: #0b0e1f;
+    --oscuro-sidebar: #121526;
+    --contenedor-glass: rgba(26, 31, 61, 0.7);
+    --borde: #2a2f4d;
+    --blanco: #ffffff;
+    --texto-suave: #adb5bd;
+    --shadow-pro: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --transicion: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 5px var(--azul-glow); }
+    50% { box-shadow: 0 0 20px var(--azul-glow); }
+    100% { box-shadow: 0 0 5px var(--azul-glow); }
 }
 
 body {
-    background-color: #f4f4f4;
-    color: #333;
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--oscuro-fondo);
+    color: var(--blanco);
+    overflow-x: hidden;
+    line-height: 1.6;
 }
 
-.app-container {
-    display: flex;
-    min-height: 100vh;
+/* --- 2. DISEÑO DE BOTONES (ESTILO CONSOLA) --- */
+button, .btn-submit-main, .btn-search-pro, .btn-view-details, .btn-social {
+    background: linear-gradient(135deg, #a0c4ff 0%, #5a90e0 100%);
+    color: #0b0e1f;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transicion);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* --- Barra Lateral --- */
+button:hover, .btn-submit-main:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 25px var(--azul-glow);
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* --- 3. DISEÑO DE CAJAS DE TEXTO (INPUTS/TEXTAREAS) --- */
+input[type="text"], 
+input[type="password"], 
+input[type="email"], 
+textarea, 
+select {
+    background: rgba(18, 21, 38, 0.9) !important;
+    border: 2px solid var(--borde) !important;
+    color: var(--blanco) !important;
+    padding: 15px 20px !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    transition: var(--transicion) !important;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--azul-primario) !important;
+    background: rgba(26, 31, 61, 1) !important;
+    box-shadow: 0 0 15px var(--azul-glow) !important;
+}
+
+/* --- 4. BARRA LATERAL (SIDEBAR PROFESIONAL) --- */
 .sidebar {
-    width: 250px;
-    background-color: #8ab6f9;
-    border-right: 2px solid #5a8cd9;
-    padding: 20px 0;
-    flex-shrink: 0;
+    width: 260px;
+    background-color: var(--oscuro-sidebar);
+    position: fixed;
+    height: 100vh;
+    z-index: 1500;
+    transition: var(--transicion);
+    border-right: 2px solid var(--borde);
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 30px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--borde);
 }
 
 .menu-item {
-    display: block;
-    padding: 15px 20px;
-    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    padding: 18px 25px;
+    color: var(--texto-suave);
     text-decoration: none;
-    font-size: 16px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transition: var(--transicion);
+    font-weight: 600;
+    margin: 8px 15px;
+    border-radius: 12px;
 }
 
-.menu-item:hover, .menu-item.active {
-    background-color: #5a8cd9;
-    color: white;
-    font-weight: bold;
+.menu-item:hover {
+    background: rgba(160, 196, 255, 0.1);
+    color: var(--azul-primario);
+    padding-left: 35px;
 }
 
-/* --- Contenido Principal y Header --- */
+.menu-item.active {
+    background: linear-gradient(90deg, rgba(160, 196, 255, 0.2) 0%, transparent 100%);
+    color: var(--azul-primario);
+    border-left: 4px solid var(--azul-primario);
+}
+
+/* --- 5. ESTRUCTURA Y CONTENIDO --- */
+.app-container { display: flex; }
+
 .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.top-header {
-    display: flex;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #ffffff;
-    border-bottom: 2px solid #ccc;
-}
-
-.logo-area h2 {
-    margin-right: 40px;
-    font-size: 28px;
-}
-
-.search-bar input {
-    width: 400px;
-    padding: 10px 15px;
-    border: 2px solid #ccc;
-    border-radius: 20px;
-    font-size: 16px;
-}
-
-/* =========================================
-   DISEÑO 1: PÁGINA DE INICIO (Novedades)
-   ========================================= */
-.novedades-section {
+    flex-grow: 1;
+    margin-left: 260px;
     padding: 40px;
+    transition: var(--transicion);
+    width: calc(100% - 260px);
+    animation: fadeIn 0.6s ease-out;
 }
 
-.novedades-section h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: normal;
+.nav-control-header {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 65px;
+    background: var(--oscuro-sidebar);
+    border-bottom: 2px solid var(--azul-primario);
+    z-index: 2000;
+    align-items: center; padding: 0 20px;
 }
 
-.pagina-inicio .grid-juegos {
+/* --- 6. DISEÑO DE TARJETAS (GRIDS) --- */
+.grid-juegos, .resultados-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tarjetas de buen tamaño */
-    gap: 25px;
-}
-
-.pagina-inicio .juego-card {
-    background: #fff;
-    border: 2px solid #333;
-    display: flex;
-    min-height: 120px; /* Crece si el texto es muy largo */
-    overflow: hidden;
-}
-
-.pagina-inicio .imagen-placeholder {
-    width: 40%;
-    flex-shrink: 0; /* Evita que las imágenes anchas aplasten el texto */
-    border-right: 2px solid #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #000;
-}
-
-.pagina-inicio .imagen-placeholder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-}
-
-.pagina-inicio .info {
-    padding: 15px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.pagina-inicio .info h4 { font-size: 16px; margin-bottom: 5px; }
-.pagina-inicio .info p { font-size: 12px; color: #666; }
-
-
-/* =========================================
-   DISEÑO 2: PÁGINA DE INFO (Nombre, póster e info)
-   ========================================= */
-.info-juego-section {
-    padding: 40px;
-}
-
-.titulo-juego {
-    font-size: 32px;
-    margin-bottom: 30px;
-}
-
-.contenedor-info-layout {
-    display: flex;
-    gap: 40px; /* Separación entre la imagen y el recuadro derecho */
-    width: 100%;
-    max-width: 1000px; /* Para que no se estire de forma fea en pantallas gigantes */
-}
-
-/* Lado izquierdo (Póster) */
-.poster-juego {
-    width: 300px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.poster-juego img {
-    width: 100%;
-    aspect-ratio: 3 / 4; /* Mantiene proporción de portada vertical */
-    object-fit: cover;
-    border: 2px solid #333;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.genero-etiqueta {
-    font-size: 14px;
-    color: #555;
-    text-align: center;
-}
-
-/* Lado derecho (Recuadro de información) */
-.recuadro-informacion {
-    flex: 1;
-    border: 2px solid #333; /* El recuadro que marca el wireframe */
-    background: #fff;
-    padding: 30px;
-    height: fit-content; /* Se ajusta al texto que tenga adentro */
-}
-
-.recuadro-informacion p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 10px;
-}
-/* =========================================
-   DISEÑO 3: PÁGINAS DE RESEÑAS Y AYUDA
-   ========================================= */
-.contenido-seccion {
-    padding: 40px;
-}
-
-.titulo-seccion {
-    font-size: 32px;
-    margin-bottom: 20px;
-}
-
-.subtitulo {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 30px;
-}
-
-/* --- Estilos de Reseñas --- */
-.review-container {
-    border: 2px solid #333;
-    padding: 30px;
-    display: flex;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 30px;
-    background: #fff;
+    margin-top: 25px;
 }
 
-.game-info {
-    width: 200px;
-    text-align: center;
+.juego-card {
+    background: var(--contenedor-glass);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--borde);
+    transition: var(--transicion);
+    backdrop-filter: blur(10px);
 }
 
-.game-info img {
-    width: 100%;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-    border: 2px solid #333;
-    margin-bottom: 10px;
+.juego-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--azul-primario);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
 }
 
-.review-box {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.juego-card img {
+    width: 100%; height: 350px; object-fit: cover;
 }
 
-.review-box textarea {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #ccc;
-    padding: 15px;
-    resize: none;
-    font-size: 16px;
-    font-family: inherit;
+/* --- 7. PÁGINA DE RESEÑAS Y DETALLE --- */
+.game-poster-container {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 3px solid var(--azul-primario);
+    box-shadow: var(--shadow-pro);
+    animation: glowPulse 4s infinite;
 }
 
-.btn-send {
-    align-self: flex-end;
-    margin-top: 15px;
-    padding: 10px 30px;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    transition: 0.2s;
-}
-
-.btn-send:hover { background-color: #555; }
-
-/* --- Estilos de Ayuda --- */
-.help-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.help-card {
-    border: 2px solid #5a8cd9;
-    padding: 20px;
-    background-color: #fff;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.help-card:hover {
-    background-color: #e6f0ff;
-    transform: translateY(-3px);
-}
-
-.help-card h3 { margin-bottom: 10px; }
-
-.contact-form {
-    margin-top: 50px;
-    background-color: #fff;
+.info-sidebar-tecnica {
+    background: rgba(255, 255, 255, 0.03);
     padding: 30px;
-    border: 2px solid #ccc;
+    border-radius: 20px;
+    border: 1px solid var(--borde);
 }
 
-.contact-form input, .contact-form textarea {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0 20px 0;
-    border: 2px solid #ccc;
-    font-family: inherit;
+/* --- 8. LOGIN Y REGISTRO --- */
+.login-card-modern {
+    background: rgba(26, 31, 61, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 45px;
+    border-radius: 30px;
+    border: 2px solid var(--borde);
+    box-shadow: var(--shadow-pro);
 }
 
-.btn-support {
-    background-color: #333;
-    color: #fff;
-    padding: 12px 30px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
+/* --- 9. PERFIL Y ESTADÍSTICAS --- */
+.perfil-container {
+    background: var(--contenedor-glass);
+    border-radius: 35px;
+    border: 1px solid var(--borde);
+    padding: 60px 40px;
+    backdrop-filter: blur(20px);
 }
 
-/* =========================================
-   RESPONSIVE (Celulares)
-   ========================================= */
-@media screen and (max-width: 768px) {
-    .app-container { flex-direction: column; }
-    .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 2px solid #5a8cd9;
-    }
-    .top-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-    }
-    .search-bar input {
-        width: 100%;
-        margin-top: 15px;
-    }
-    .pagina-inicio .grid-juegos { grid-template-columns: 1fr; }
-    
-    /* En celular, la página de info pone la imagen arriba y el texto abajo */
-    .contenedor-info-layout {
-        flex-direction: column;
-        align-items: center;
-    }
-    .recuadro-informacion {
-        width: 100%;
-    }
+.user-avatar-upload {
+    border: 5px solid var(--azul-primario);
+    box-shadow: 0 0 30px var(--azul-glow);
 }
-.sidebar.hidden { display: none; } 
-/* O si prefieres que se deslice: margin-left: -250px; */
+
+.resena-card-mini {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 6px solid var(--azul-primario);
+    transition: var(--transicion);
+}
+
+/* --- 10. REGLAS DE RESPONSIVIDAD FINAL --- */
+@media (max-width: 768px) {
+    .nav-control-header { display: flex; }
+    .sidebar { top: 65px; left: -100%; width: 280px; }
+    .sidebar:not(.hidden) { left: 0; }
+    .main-content { margin-left: 0; width: 100%; padding-top: 90px; }
+    .grid-juegos { grid-template-columns: 1fr; }
+    .user-info-stats { flex-direction: column; gap: 30px; }
+}
+
+/* Regla para evitar desbordes de imágenes */
+.main-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--oscuro-fondo); }
+::-webkit-scrollbar-thumb { 
+    background: var(--borde); 
+    border-radius: 10px; 
+    border: 2px solid var(--oscuro-fondo);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--azul-primario); }

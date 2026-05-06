@@ -3,54 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Browser | Info</title>
+    <title>Game Browser | Detalles del Juego</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="pagina-info">
-
+<body class="pagina-detalle">
+    <div class="nav-control-header">
+    <button class="btn-menu-toggle" onclick="toggleMenu()">☰ </button>
+    <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+</div>
     <div class="app-container">
-
-        <aside class="sidebar">
+        <!-- Sidebar consistente -->
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <a href="Loguin.html" class="menu-item">👤 Iniciar sesion / Perfil</a>    
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Perfil</a>
+                    
+                </div>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
+                <a href="busqueda.html" class="menu-item active">🎮 Juegos</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
         </aside>
 
-        <main class="main-content">
-            
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
+
+        <main class="main-content" id="main-content">
             <header class="top-header">
-                <div class="logo-area">
-                    <h2>Game Browser</h2>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="🔍 Buscar juego...">
+                <!-- Botón de Regresar con Historial -->
+                <button class="btn-filter" onclick="window.history.back()" style="margin-right: 20px;">⬅ Regresar</button>
+                
+                <div class="logo-area-inline" style="flex-grow: 1;">
+                    <h1 id="game-title">Cargando juego...</h1>
                 </div>
             </header>
 
-            <section class="info-juego-section">
-                <h2 class="titulo-juego">Persona 5 Royal</h2>
-                
+            <section class="game-selected-section">
                 <div class="contenedor-info-layout">
-                    
-                    <div class="poster-juego">
-                        <img src="img/persona5_royal.jpg" alt="Persona 5 Royal">
-                        <p class="genero-etiqueta">RPG, PlayStation, PC, Switch</p>
+                    <!-- Columna Izquierda: Imagen y Datos Rápidos -->
+                    <div class="col-izquierda">
+                        <div class="poster-juego">
+                            <img id="game-img" src="" alt="Poster">
+                        </div>
+                        
+                        <div class="info-sidebar-tecnica" style="margin-top: 20px; background: #1a1f3d; padding: 15px; border-radius: 10px;">
+                            <p><strong>Metacritic:</strong> <span id="game-meta" class="tag" style="background: #66cc33;">--</span></p>
+                            <p><strong>Lanzamiento:</strong> <span id="game-date">--</span></p>
+                            <p><strong>Desarrollador:</strong> <span id="game-dev">--</span></p>
+                            <p><strong>Plataformas:</strong> <span id="game-platforms" style="font-size: 0.8rem; color: #a0aec0;">--</span></p>
+                        </div>
                     </div>
 
-                    <div class="recuadro-informacion">
-                        <p><strong>Desarrollador:</strong> Atlus</p>
-                        <br>
-                        <p><strong>Información del juego:</strong> Ponte la máscara y únete a los Ladrones Fantasma de Corazones en esta épica aventura RPG. Explora Tokio, haz nuevos amigos y cambia la sociedad corrompida.</p>
-                    </div>
+                    <!-- Columna Derecha: Sinopsis y Acciones -->
+                    <div class="col-derecha">
+                        <div class="recuadro-informacion">
+                            <h3>Sobre el juego</h3>
+                            <div id="game-desc" style="line-height: 1.6; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                                Cargando descripción oficial desde RAWG...
+                            </div>
+                        </div>
 
+                        <div class="acciones-juego" style="margin-top: 30px; display: flex; gap: 15px;">
+                            <button class="btn-search-pro" onclick="irAReseñar()">✍ Escribir Reseña</button>
+                            <button class="btn-filter" onclick="window.open('https://www.youtube.com/results?search_query=' + document.getElementById('game-title').innerText + ' trailer', '_blank')">📺 Ver Tráiler</button>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
-
     </div>
 
+    <script>
+        const API_KEY = '87246c155ff944ebbe403cb842778903';
+
+        async function cargarDetalles() {
+            const id = localStorage.getItem('juegoSeleccionadoID');
+            if (!id) { window.location.href = 'index.html'; return; }
+
+            const url = `https://api.rawg.io/api/games/${id}?key=${API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                const juego = await response.json();
+
+                // Llenar datos principales
+                document.getElementById('game-title').innerText = juego.name;
+                document.getElementById('game-img').src = juego.background_image || 'img/no-image.jpg';
+                document.getElementById('game-desc').innerHTML = juego.description || "No hay descripción disponible.";
+                
+                // Llenar datos técnicos de la "barra" lateral
+                document.getElementById('game-meta').innerText = juego.metacritic || 'N/A';
+                document.getElementById('game-date').innerText = juego.released || 'TBA';
+                document.getElementById('game-dev').innerText = juego.developers.map(d => d.name).join(', ') || 'Desconocido';
+                document.getElementById('game-platforms').innerText = juego.platforms.map(p => p.platform.name).join(', ');
+
+                // Guardar para la página de reseñas
+                localStorage.setItem('juegoSeleccionadoNombre', juego.name);
+                localStorage.setItem('juegoSeleccionadoImg', juego.background_image);
+                
+            } catch (error) {
+                console.error("Error al cargar detalles:", error);
+            }
+        }
+
+        function irAReseñar() {
+            window.location.href = 'reseñas.html';
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+            document.getElementById('main-content').classList.toggle('full-width');
+        }
+
+        window.onload = cargarDetalles;
+    </script>
 </body>
 </html>

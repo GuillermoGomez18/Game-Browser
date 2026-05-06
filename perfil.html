@@ -2,41 +2,78 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Browser | Mi Perfil</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .profile-container { padding: 40px; max-width: 800px; margin: auto; }
-        .user-card { border: 2px solid black; padding: 20px; background: #f9f9f9; border-radius: 8px; margin-bottom: 20px; }
-        .review-item { border-left: 5px solid #a0c4ff; padding: 10px; margin: 10px 0; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-        .btn-clear { background: #ffadad; border: 1px solid black; cursor: pointer; padding: 5px; margin-top: 10px; }
-    </style>
 </head>
-<body>
-    <div style="display: flex;">
+<body class="pagina-perfil">
+    <!-- Navegación Móvil -->
+    <div class="nav-control-header">
+        <button class="btn-menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+        <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
-                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
-                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item active" id="user-link">👤 Perfil</a>
                 </div>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
-                <a href="ayuda.html" class="menu-item active">❓ Ayuda</a>
-                <a href="Loguin.html"></a><button onclick="cerrarSesion()" class="btn-clear">Cerrar Sesión</button></a>
-        </aside>
+                <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
+                <div class="sidebar-footer" style="padding: 20px;">
+                    <button onclick="cerrarSesion()" class="btn-logout" style="width: 100%; background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Cerrar Sesión</button>
+                </div>
             </div>
         </aside>
 
-        <main style="flex-grow: 1; padding: 20px;">
-            <div class="profile-container">
-                <div class="user-card">
-                    <h1 id="welcome-user">Cargando perfil...</h1>
-                    <p id="user-email">Correo: usuario@ues.mx</p>
-                </div>
+        <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
 
-                <h3>📝 Mis Reseñas Publicadas</h3>
-                <div id="contenedor-resenas">
+        <main class="main-content">
+            <header class="top-header">
+                <div class="logo-area-inline">
+                    <h2>Panel de Usuario</h2>
+                </div>
+            </header>
+
+            <div class="profile-layout">
+                <!-- Tarjeta Principal con Edición -->
+                <section class="perfil-container">
+                    <div class="user-avatar-upload" onclick="document.getElementById('input-foto').click()">
+                        <img src="img/logo1.webp" alt="Avatar" id="avatar-img" title="Click para cambiar foto">
+                        <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="cambiarFoto(event)">
                     </div>
+                    
+                    <div class="user-info">
+                        <h1 id="welcome-user">Usuario</h1>
+                        <p class="user-role" id="user-role">Ingeniería en Software - UES</p>
+                        
+                        <div id="display-data">
+                            <p id="user-email-display">📧 usuario@ues.mx</p>
+                            <button class="btn-submit-main" onclick="activarEdicion()" style="margin-top: 15px;">Editar Perfil</button>
+                        </div>
+
+                        <!-- Formulario de Edición Oculto -->
+                        <div id="edit-form" style="display: none; margin-top: 20px;">
+                            <input type="text" id="edit-name" placeholder="Nuevo nombre" style="margin-bottom: 10px;">
+                            <input type="email" id="edit-email" placeholder="Nuevo correo">
+                            <div style="margin-top: 15px;">
+                                <button class="btn-submit-main" onclick="guardarCambios()">Guardar</button>
+                                <button class="btn-filter" onclick="cancelarEdicion()">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Listado de Reseñas -->
+                <section class="reviews-container" style="margin-top: 40px;">
+                    <h3>📝 Mis Reseñas Publicadas</h3>
+                    <div id="contenedor-resenas" class="lista-resenas-perfil">
+                        <!-- Se carga con JS -->
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -44,28 +81,90 @@
     <script>
         const currentUser = localStorage.getItem('usuarioLogueado');
 
+        // SEGURIDAD: Redirigir si no hay sesión
         if (!currentUser) {
             window.location.href = "Loguin.html";
         }
 
-        document.getElementById('welcome-user').innerText = `Perfil de ${currentUser}`;
+        window.onload = function() {
+            cargarDatosUsuario();
+            cargarResenas();
+            cargarFotoGuardada();
+        };
 
+        function cargarDatosUsuario() {
+            const savedName = localStorage.getItem(`${currentUser}_name`) || currentUser;
+            const savedEmail = localStorage.getItem(`${currentUser}_email`) || `${currentUser}@ues.mx`;
+
+            document.getElementById('welcome-user').innerText = savedName;
+            document.getElementById('user-email-display').innerText = `📧 ${savedEmail}`;
+            document.getElementById('user-link').innerHTML = `👤 ${savedName}`;
+        }
+
+        // CARGA DE FOTO DE PERFIL (Base64 para LocalStorage)
+        function cambiarFoto(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const imgElement = document.getElementById('avatar-img');
+                imgElement.src = reader.result;
+                // Guardar foto asociada al usuario específico
+                localStorage.setItem(`${currentUser}_foto`, reader.result);
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function cargarFotoGuardada() {
+            const foto = localStorage.getItem(`${currentUser}_foto`);
+            if (foto) {
+                document.getElementById('avatar-img').src = foto;
+            }
+        }
+
+        // LÓGICA DE EDICIÓN
+        function activarEdicion() {
+            document.getElementById('display-data').style.display = 'none';
+            document.getElementById('edit-form').style.display = 'block';
+            document.getElementById('edit-name').value = document.getElementById('welcome-user').innerText;
+            document.getElementById('edit-email').value = document.getElementById('user-email-display').innerText.replace('📧 ', '');
+        }
+
+        function cancelarEdicion() {
+            document.getElementById('display-data').style.display = 'block';
+            document.getElementById('edit-form').style.display = 'none';
+        }
+
+        function guardarCambios() {
+            const nuevoNombre = document.getElementById('edit-name').value;
+            const nuevoEmail = document.getElementById('edit-email').value;
+
+            if(nuevoNombre && nuevoEmail) {
+                localStorage.setItem(`${currentUser}_name`, nuevoNombre);
+                localStorage.setItem(`${currentUser}_email`, nuevoEmail);
+                cargarDatosUsuario();
+                cancelarEdicion();
+                alert("Perfil actualizado correctamente");
+            }
+        }
+
+        // CARGAR RESEÑAS DEL LOCALSTORAGE
         function cargarResenas() {
             const listaResenas = JSON.parse(localStorage.getItem('misResenas')) || [];
             const contenedor = document.getElementById('contenedor-resenas');
             
-            // Filtrar reseñas que pertenezcan al usuario logueado
-            const misResenas = listaResenas.filter(r => r.usuario === currentUser);
+            const misResenas = listaResenas.filter(r => r.usuario === currentUser); 
 
             if (misResenas.length === 0) {
-                contenedor.innerHTML = "<p>Aún no has escrito ninguna reseña.</p>";
+                contenedor.innerHTML = `<div class="resena-card-mini"><p>No has publicado reseñas aún.</p></div>`;
                 return;
             }
 
             contenedor.innerHTML = misResenas.map(r => `
-                <div class="review-item">
-                    <strong>🎮 ${r.juego}</strong> <small>(${r.fecha})</small>
-                    <p>"${r.contenido}"</p>
+                <div class="resena-card-mini">
+                    <div class="resena-info-text">
+                        <h4>🎮 ${r.juego}</h4>
+                        <p>"${r.contenido}"</p>
+                    </div>
+                    <span style="font-size: 0.8rem; color: #a0c4ff;">${r.fecha}</span>
                 </div>
             `).join('');
         }
@@ -75,7 +174,9 @@
             window.location.href = "Loguin.html";
         }
 
-        window.onload = cargarResenas;
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('hidden'); 
+        }
     </script>
 </body>
 </html>

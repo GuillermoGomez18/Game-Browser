@@ -3,49 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Browser | Inicio</title>
+    <title>Game Browser | Inicio Pro</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Agregamos esto para asegurar que el botón de apertura funcione */
-        .btn-open-sidebar {
-            position: fixed;
-            left: 10px;
-            top: 15px;
-            z-index: 50;
-            font-size: 24px;
-            cursor: pointer;
-            background: #a0c4ff;
-            border: 1px solid black;
-            border-radius: 5px;
-            display: none; 
-        }
-
-        /* Si el sidebar tiene la clase hidden, mostramos el botón de afuera */
-        .sidebar.hidden + .btn-open-sidebar {
-            display: block;
-        }
-        
-        /* Aseguramos la animación en el CSS */
-        .sidebar {
-            transition: all 0.4s ease;
-        }
-
-        .sidebar.hidden {
-            margin-left: -250px;
-        }
-    </style>
 </head>
 <body class="pagina-inicio">
-
+    <div class="nav-control-header">
+    <button class="btn-menu-toggle" onclick="toggleMenu()">☰ </button>
+    <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+</div>
     <div class="app-container">
-
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
-                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
-                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Perfil / Login</a>
+                    
                 </div>    
                 <a href="index.html" class="menu-item active">🏠 Inicio</a>
+                <a href="busqueda.html" class="menu-item">🎮 Juegos</a>
+                <a href="consolas.html" class="menu-item">🕹️ Consolas</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
@@ -53,78 +28,87 @@
 
         <button class="btn-open-sidebar" onclick="toggleMenu()">☰</button>
 
-        <main class="main-content">
+        <main class="main-content" id="main-content">
             <header class="top-header">
-                <div class="logo-area">
-                    <h2>Game Browser</h2>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="🔍 Buscar juego...">
+                <div class="logo-area"><h2>Game Browser</h2></div>
+                <div class="search-bar-modern">
+                    <input type="text" id="globalSearch" placeholder="Buscar juego real...">
+                    <button class="search-icon" id="btnSearch">🔍</button>
                 </div>
             </header>
 
             <section class="novedades-section">
-                <h3>Novedades</h3>
-                <div class="grid-juegos">
-                    <a href="InformacionJuego.html" class="juego-card" style="text-decoration: none; color: inherit;">
-                        <div class="imagen-placeholder">
-                            <img src="img/persona-persona5.webp" alt="Persona 5">
-                        </div>
-                        <div class="info">
-                            <h4>Persona 5 Royal</h4>
-                            <p>RPG, PS5, PC, XBOX SERIES X/S, SWITCH</p>
-                        </div>
-                    </a>
-
-                    <article class="juego-card">
-                        <div class="imagen-placeholder">
-                            <img src="img/hell.webp" alt="Helldivers 2">
-                        </div>
-                        <div class="info">
-                            <h4>Helldivers 2</h4>
-                            <p>Shooter, PS5, PC, XBOX SERIES X/S</p>
-                        </div>
-                    </article>
-
-                    <article class="juego-card">
-                        <div class="imagen-placeholder">
-                            <img src="img/GTA6.webp" alt="GTA VI">
-                        </div>
-                        <div class="info">
-                            <h4>GTA VI</h4>
-                            <p>PROXIMAMENTE</p>
-                        </div>
-                    </article>
-                    
-                    <article class="juego-card">
-                        <div class="imagen-placeholder">
-                            <img src="img/CALLOF.webp" alt="Call of Duty">
-                        </div>
-                        <div class="info">
-                            <h4>CALL OF DUTY BLACK OPS 6</h4>
-                            <p>Shooter, PS5, PC, XBOX SERIES X/S</p>
-                        </div>
-                    </article>
+                <h3>Novedades (Cargadas desde RAWG API)</h3>
+                <div class="grid-juegos" id="contenedor-juegos">
+                    <p>Cargando catálogo de juegos...</p>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        function toggleMenu() {
-            const side = document.getElementById('sidebar');
-            if (side) {
-                side.classList.toggle('hidden');
+        // 1. CONFIGURACIÓN DE LA API
+        const API_KEY = '87246c155ff944ebbe403cb842778903'; // <--- PON TU CLAVE AQUÍ
+        const URL_API = `https://api.rawg.io/api/games?key=${API_KEY}&page_size=12`;
+
+        async function cargarJuegosAPI() {
+            try {
+                const respuesta = await fetch(URL_API);
+                const datos = await respuesta.json();
+                const contenedor = document.getElementById('contenedor-juegos');
+                contenedor.innerHTML = ''; // Limpiar mensaje de carga
+
+                datos.results.forEach(juego => {
+                    const card = `
+                        <article class="juego-card">
+                            <div class="imagen-placeholder">
+                                <img src="${juego.background_image || 'img/no-image.jpg'}" alt="${juego.name}">
+                            </div>
+                            <div class="info">
+                                <h4>${juego.name}</h4>
+                                <p>${juego.genres.map(g => g.name).join(', ')}</p>
+                                <small>⭐ Rating: ${juego.rating}</small>
+                            </div>
+                        </article>
+                    `;
+                    contenedor.innerHTML += card;
+                });
+            } catch (error) {
+                console.error("Error API:", error);
+                document.getElementById('contenedor-juegos').innerHTML = "<p>Error al conectar con la base de datos.</p>";
             }
         }
 
+        // 2. LÓGICA DEL BUSCADOR (CORREGIDA)
+        function ejecutarBusqueda() {
+            const query = document.getElementById('globalSearch').value.trim();
+            if (query.length > 2) {
+                // Redirigimos a la página de búsqueda con el parámetro
+                window.location.href = `busqueda.html?query=${encodeURIComponent(query)}`;
+            } else {
+                alert("Escribe al menos 3 letras.");
+            }
+        }
+
+        document.getElementById('btnSearch').onclick = ejecutarBusqueda;
+        document.getElementById('globalSearch').onkeypress = (e) => {
+            if (e.key === 'Enter') ejecutarBusqueda();
+        };
+
+        // 3. FUNCIONES DE INTERFAZ
+        function toggleMenu() {
+    const side = document.getElementById('sidebar');
+    const main = document.getElementById('main-content'); // Asegúrate que tu <main> tenga este ID
+    side.classList.toggle('hidden');
+    main.classList.toggle('full-width');
+}
+
         window.onload = function() {
+            cargarJuegosAPI(); // Carga los juegos al abrir
             const display = document.getElementById('user-link');
             const user = localStorage.getItem('usuarioLogueado');
-
             if (user && display) {
                 display.innerHTML = `👤 Hola, ${user}`;
-                display.href = "perfil.html";
             }
         };
     </script>

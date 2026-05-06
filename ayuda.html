@@ -6,25 +6,18 @@
     <title>Game Browser | Ayuda</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        .sidebar { transition: all 0.4s ease; }
-        .sidebar.hidden { margin-left: -250px; }
-        .btn-open-sidebar {
-            position: fixed; left: 10px; top: 15px; z-index: 50;
-            font-size: 24px; cursor: pointer; background: #a0c4ff;
-            border: 1px solid black; border-radius: 5px; display: none; 
-        }
-        .sidebar.hidden + .btn-open-sidebar { display: block; }
-    </style>
 </head>
 <body class="pagina-ayuda">
-
+    <div class="nav-control-header">
+    <button class="btn-menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+    <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+</div>
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
-                    <a href="perfil.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
-                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Iniciar sesión / Perfil</a>
+                   
                 </div>    
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
                 <a href="reseñas.html" class="menu-item">➕ Añadir reseña</a>
@@ -36,108 +29,240 @@
 
         <main class="main-content">
             <header class="top-header">
-                <div class="logo-area"><h2>Game Browser</h2></div>
-                <div class="search-bar"><input type="text" placeholder="🔍 Buscar en ayuda..."></div>
+                <div class="logo-area-inline">
+                    <div class="profile-mini-gif">
+                        <img src="img/logo1.webp" alt="Logo">
+                    </div>
+                    <h1>Gamebrowser</h1>
+                </div>
+                <div class="search-bar-modern">
+                    <input type="text" id="helpSearch" placeholder="🔍 ¿En qué podemos ayudarte?" onkeyup="filtrarAyuda()">
+                </div>
             </header>
 
-            <section class="contenido-seccion">
-                <h2 class="titulo-seccion">Centro de Ayuda y Soporte</h2>
-                <p class="subtitulo">¿Tienes problemas con GameBrowser? Estamos aquí para ayudarte.</p>
-
-                <div class="help-grid">
-                    <div class="help-card">
-                        <h3>Preguntas Frecuentes</h3>
-                        <p>Gestión de cuenta y perfil.</p>
+            <section class="game-selected-section">
+                <h2 class="section-title">Centro de Soporte</h2>
+                
+                <div class="help-grid" id="helpGrid">
+                    <div class="game-card-result help-item">
+                        <div class="game-card-info">
+                            <h3>Preguntas Frecuentes</h3>
+                            <p>Gestión de cuenta, cambio de contraseña y privacidad de perfil.</p>
+                        </div>
                     </div>
-                    <div class="help-card">
-                        <h3>Guía de Reseñas</h3>
-                        <p>Cómo publicar contenido de calidad.</p>
+                    <div class="game-card-result help-item">
+                        <div class="game-card-info">
+                            <h3>Guía de Reseñas</h3>
+                            <p>Aprende cómo publicar reseñas que ayuden a otros jugadores.</p>
+                        </div>
                     </div>
-                    <div class="help-card">
-                        <h3>Problemas Técnicos</h3>
-                        <p>Reporta fallos en la interfaz.</p>
+                    <div class="game-card-result help-item">
+                        <div class="game-card-info">
+                            <h3>Problemas Técnicos</h3>
+                            <p>Reporta fallos en la carga de imágenes o errores de navegación.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="contact-form">
-                    <h2>Contactar con Soporte</h2>
-                    <form id="soporteForm">
-                        <input type="text" id="asunto" placeholder="Asunto del problema" required>
-                        <textarea id="mensaje" placeholder="Describe detalladamente tu problema aquí..." rows="5" required></textarea>
-                        <button type="submit" class="btn-support">Enviar Ticket y Descargar PDF</button>
-                    </form>
-                </div>
+                <div class="login-card-modern">
+    <h2 style="color: white; margin-bottom: 20px;">Contactar con Soporte</h2>
+    <form id="soporteForm">
+        <div class="input-group">
+            <label>Asunto del problema</label>
+            <input type="text" id="asunto" placeholder="Ej. Error al cargar perfil" required>
+        </div>
+        
+        <div class="input-group" style="margin-top: 20px;">
+            <label>Mensaje detallado</label>
+            <textarea id="mensaje" placeholder="Describe tu situación..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn-submit-main">Enviar Ticket y Descargar PDF</button>
+    </form>
+</div>
             </section>
         </main>
     </div>
 
     <script>
-        const { jsPDF } = window.jspdf;
 
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar) sidebar.classList.toggle('hidden');
+        // Función de búsqueda en tiempo real
+        function filtrarAyuda() {
+            const input = document.getElementById('helpSearch').value.toLowerCase();
+            const cards = document.getElementsByClassName('help-item');
+
+            for (let i = 0; i < cards.length; i++) {
+                const title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                const text = cards[i].getElementsByTagName('p')[0].innerText.toLowerCase();
+                
+                if (title.includes(input) || text.includes(input)) {
+                    cards[i].style.display = "block";
+                    cards[i].style.animation = "fadeIn 0.5s";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
         }
 
-        window.onload = function() {
-            const display = document.getElementById('user-link');
-            const user = localStorage.getItem('usuarioLogueado');
-            if (user && display) {
-                display.innerHTML = `👤 Hola, ${user}`;
-                display.href = "perfil.html";
-            }
-        };
+       function toggleMenu() {
+    const side = document.getElementById('sidebar');
+    const main = document.getElementById('main-content'); // Asegúrate que tu <main> tenga este ID
+    side.classList.toggle('hidden');
+    main.classList.toggle('full-width');
+}
 
-        // Lógica para generar el PDF Profesional
-        document.getElementById('soporteForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+       window.onload = function() {
+    const display = document.getElementById('user-link');
+    const user = localStorage.getItem('usuarioLogueado');
+    if (user && display) {
+        display.innerHTML = `👤 Hola, ${user}`; 
+        display.href = "perfil.html";
+    }
+};
 
-            const user = localStorage.getItem('usuarioLogueado') || "Usuario Invitado";
-            const asunto = document.getElementById('asunto').value;
-            const mensaje = document.getElementById('mensaje').value;
-            const fecha = new Date().toLocaleString();
+const { jsPDF } = window.jspdf;
 
-            const doc = new jsPDF();
+document.getElementById('soporteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-            // Configuración estética del PDF
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.text("GAME BROWSER - TICKET DE SOPORTE", 105, 20, { align: "center" });
-            
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.text("Universidad Estatal de Sonora (UES)", 105, 30, { align: "center" });
-            doc.text("Dirección: Ley Federal del Trabajo s/n, Col. Apolo, Hermosillo, Sonora.", 105, 35, { align: "center" });
-            
-            doc.line(20, 40, 190, 40); // Línea divisoria
+    const user = localStorage.getItem('usuarioLogueado') || "Usuario Invitado";
+    const asunto = document.getElementById('asunto').value;
+    const mensaje = document.getElementById('mensaje').value;
+    const folio = `GB-SOFT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    
+    const fechaActual = new Date().toLocaleDateString('es-ES', { 
+        year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' 
+    });
+    const horaActual = new Date().toLocaleTimeString();
 
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text("Información del Usuario:", 20, 55);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Nombre: ${user}`, 20, 65);
-            doc.text(`Fecha de reporte: ${fecha}`, 20, 72);
+    const doc = new jsPDF();
+    const imgLogo = new Image();
+    imgLogo.src = 'img/logo1.webp'; 
 
-            doc.setFont("helvetica", "bold");
-            doc.text("Detalles del Reporte:", 20, 85);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Asunto: ${asunto}`, 20, 95);
-            
-            doc.text("Mensaje:", 20, 105);
-            // El texto se ajusta automáticamente al ancho del PDF
-            const splitText = doc.splitTextToSize(mensaje, 170);
-            doc.text(splitText, 20, 115);
+    imgLogo.onload = function() {
+        const marginX = 25;
+        const boxWidth = 160; 
 
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "italic");
-            doc.text("Gracias por contactarnos. Nuestro equipo revisará su caso pronto.", 105, 280, { align: "center" });
+        // --- 1. MARCA DE AGUA ---
+        doc.saveGraphicsState();
+        doc.setGState(new doc.GState({ opacity: 0.12 }));
+        doc.addImage(imgLogo, 'WEBP', 45, 80, 120, 120);
+        doc.restoreGraphicsState();
 
-            // Descarga el archivo
-            doc.save(`Ticket_Soporte_${user}.pdf`);
-            
-            alert('¡Ticket generado! El PDF se ha descargado correctamente.');
-            this.reset(); // Limpia el formulario
-        });
+        // --- 2. ENCABEZADO DE MARCA Y UES ---
+        doc.addImage(imgLogo, 'WEBP', 165, 12, 25, 25);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(26, 28, 44);
+        doc.text("GAMEBROWSER", marginX, 20); // Marca de la empresa
+        
+        doc.setFontSize(10);
+        doc.text("UNIVERSIDAD ESTATAL DE SONORA", marginX, 26);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text("INGENIERÍA EN SOFTWARE - UNIDAD ACADÉMICA HERMOSILLO", marginX, 31);
+        
+        doc.setLineWidth(0.8);
+        doc.line(marginX, 38, 185, 38);
+
+        // --- 3. IDENTIFICACIÓN ---
+        doc.setFontSize(10);
+        doc.text(`EXPEDIENTE: ${folio}`, marginX, 48);
+        doc.text(`FECHA: ${fechaActual.toUpperCase()}`, marginX, 53);
+        doc.text(`HORA: ${horaActual}`, marginX, 58);
+
+        // --- 4. CUERPO ENCAPSULADO ---
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("DICTAMEN TÉCNICO DE INCIDENCIA", 105, 75, { align: "center" });
+        
+        doc.setFontSize(11);
+        doc.text("A QUIEN CORRESPONDA:", marginX, 88);
+        
+        doc.setFont("helvetica", "normal");
+        const introduccion = `Por medio del presente documento oficial, el Departamento de Soporte de GameBrowser hace constar la recepción formal de la solicitud de asistencia técnica promovida por el usuario "${user.toUpperCase()}". Dicha incidencia ha sido integrada al sistema de gestión de calidad de Ingeniería en Software bajo los protocolos de la Universidad Estatal de Sonora.`;
+        
+        const lineasIntro = doc.splitTextToSize(introduccion, boxWidth - 10);
+        const altoIntro = (lineasIntro.length * 7) + 10;
+        
+        doc.setDrawColor(180, 180, 180);
+        doc.rect(marginX - 5, 93, boxWidth, altoIntro); // Cuadro contenedor
+        doc.text(lineasIntro, marginX, 100, { align: "left" });
+
+        // --- 5. DETALLES ---
+        let currentY = 93 + altoIntro + 12;
+        doc.setFont("helvetica", "bold");
+        doc.text("ASUNTO:", marginX, currentY);
+        doc.setFont("helvetica", "normal");
+        doc.text(asunto.toUpperCase(), marginX + 22, currentY);
+
+        currentY += 12;
+        doc.setFont("helvetica", "bold");
+        doc.text("DESCRIPCIÓN DE LA PROBLEMÁTICA:", marginX, currentY);
+        currentY += 8;
+        doc.setFont("helvetica", "normal");
+        const lineasMensaje = doc.splitTextToSize(mensaje, boxWidth);
+        doc.text(lineasMensaje, marginX, currentY, { align: "left" });
+
+        // --- 6. SECCIÓN DE FIRMAS (5 FIRMAS TOTAL) ---
+        let firmaY = 205;
+
+        // FIRMA DEL SOLICITANTE (Usuario Logueado)
+        doc.setFont("courier", "bolditalic");
+        doc.setFontSize(12);
+        doc.text(user, marginX, firmaY); 
+        doc.line(marginX, firmaY + 2, marginX + 65, firmaY + 2);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("SOLICITANTE / USUARIO", marginX, firmaY + 6);
+
+        // FIRMA ENCARGADO (Tú)
+        doc.setFont("courier", "bolditalic");
+        doc.setFontSize(12);
+        doc.text("Miguel P. Chenoweth", 120, firmaY); 
+        doc.line(120, firmaY + 2, 185, firmaY + 2);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("SUPERVISOR DEL PROYECTO", 120, firmaY + 6);
+
+        firmaY += 22;
+
+        // FIRMA GUILLERMO
+        doc.setFont("courier", "bolditalic");
+        doc.text("Guillermo", marginX, firmaY); 
+        doc.line(marginX, firmaY + 2, marginX + 65, firmaY + 2);
+        doc.setFont("helvetica", "bold");
+        doc.text("COORDINACIÓN SOFTWARE", marginX, firmaY + 6);
+
+        // FIRMA RAFAEL ESCOBAR
+        doc.setFont("courier", "bolditalic");
+        doc.text("Rafael Escobar", 120, firmaY); 
+        doc.line(120, firmaY + 2, 185, firmaY + 2);
+        doc.setFont("helvetica", "bold");
+        doc.text("DIRECCIÓN DE SOFTWARE", 120, firmaY + 6);
+
+        firmaY += 22;
+
+        // FIRMA MIGUEL P. CHENOWETH
+        doc.setFont("courier", "bolditalic");
+        doc.text("Carlos F. Aguayo", 105, firmaY, { align: "center" }); 
+        doc.line(75, firmaY + 2, 135, firmaY + 2);
+        doc.setFont("helvetica", "bold");
+        doc.text("DIRECCIÓN DE GAMEBROWSER", 105, firmaY + 6, { align: "center" });
+
+        // --- 7. ANEXO ---
+        doc.setFontSize(7);
+        doc.setTextColor(100);
+        doc.rect(marginX - 5, 275, boxWidth, 12);
+        const anexo = "Este dictamen es un registro oficial de GAMEBROWSER y la Universidad Estatal de Sonora. La alteración de este documento folio " + folio + " conlleva sanciones administrativas conforme al reglamento de Ingeniería en Software.";
+        doc.text(doc.splitTextToSize(anexo, boxWidth - 10), marginX, 280, { align: "left" });
+
+        // --- 8. GUARDAR ---
+        doc.save(`Reporte_GameBrowser_${folio}.pdf`); // Nombre de archivo solicitado
+        alert(`¡Dictamen Generado! Folio: ${folio}.`);
+        document.getElementById('soporteForm').reset();
+    };
+});
     </script>
 </body>
 </html>

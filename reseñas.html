@@ -3,72 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Browser | Reseñas</title>
+    <title>Game Browser | Reseñas Dinámicas</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* ANIMACIÓN Y ESTRUCTURA */
-        .app-container {
-            display: flex;
-            overflow-x: hidden;
-        }
-
-        .sidebar {
-            width: 250px;
-            min-height: 100vh;
-            background-color: #a0c4ff; /* El azul de tus wireframes */
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 100;
-        }
-
-        /* Cuando se esconde, se desliza a la izquierda */
-        .sidebar.hidden {
-            margin-left: -250px;
-        }
-
-        /* Botón de las 3 rayas cuando la barra está ABIERTA */
-        .btn-toggle-inside {
-            cursor: pointer;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: black;
-        }
-
-        /* Botón que aparece cuando la barra está CERRADA */
-        .btn-open-sidebar {
-            position: fixed;
-            left: 10px;
-            top: 15px;
-            z-index: 50;
-            font-size: 24px;
-            cursor: pointer;
-            background: #a0c4ff;
-            border: 1px solid black;
-            border-radius: 5px;
-            display: none; /* Escondido por defecto */
-        }
-
-        .sidebar.hidden + .btn-open-sidebar {
-            display: block; /* Solo se ve si la sidebar está escondida */
-        }
-
-        .main-content {
-            flex-grow: 1;
-            transition: margin-left 0.4s ease;
-        }
-    </style>
 </head>
 <body class="pagina-resenas">
-
+    <div class="nav-control-header">
+    <button class="btn-menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+    <span style="margin-left: 15px; font-weight: bold; color: #a0c4ff;">GameBrowser</span>
+</div>
     <div class="app-container">
+        <!-- Sidebar consistente -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-menu">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px;">
-                    <a href="Loguin.html" class="menu-item" id="user-link" style="font-weight: bold;">👤 Iniciar sesion / Perfil</a>
-                    <button class="btn-toggle-inside" onclick="toggleMenu()">☰</button>
+                <div class="sidebar-header">
+                    <a href="perfil.html" class="menu-item" id="user-link">👤 Perfil</a>
+                   
                 </div>
                 <a href="index.html" class="menu-item">🏠 Inicio</a>
+                <a href="busqueda.html" class="menu-item">🎮 Juegos</a>
                 <a href="reseñas.html" class="menu-item active">➕ Añadir reseña</a>
                 <a href="ayuda.html" class="menu-item">❓ Ayuda</a>
             </div>
@@ -78,77 +30,96 @@
 
         <main class="main-content">
             <header class="top-header">
-                <div class="logo-area">
-                    <h2>Game Browser</h2>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="🔍 Buscar juego para reseñar...">
+                <div class="logo-area-inline">
+                    <div class="profile-mini-gif">
+                        <img src="img/logo1.webp" alt="Logo">
+                    </div>
+                    <h1>Gamebrowser</h1>
                 </div>
             </header>
 
-            <section class="contenido-seccion">
-                <h2 class="titulo-seccion">Reseñas</h2>
-                <div class="review-container">
-                    <div class="game-info">
-                        <img src="img/persona5_royal.jpg" alt="Persona 5 Royal">
-                        <p><strong>Persona 5 Royal</strong></p>
+            <section class="game-selected-section">
+                <h2 class="section-title">Escribir Reseña</h2>
+                
+                <div class="main-info-grid">
+                    <!-- CONTENEDOR DE LA API -->
+                    <div class="game-poster-container">
+                        <!-- Estos IDs son los que el script llenará con la imagen de la API -->
+                        <img id="api-game-img" src="" alt="Cargando portada...">
+                        <div class="game-card-info">
+                            <h3 id="api-game-title" style="color: white; margin-top: 10px;">Cargando nombre...</h3>
+                        </div>
                     </div>
-                    <div class="review-box">
-                        <textarea placeholder="Escribe aquí tu reseña sobre el juego..."></textarea>
-                        <button class="btn-send" onclick="alert('Reseña enviada')">enviar</button>
+
+                    <div class="game-details-container">
+                        <div class="opinion-input-area" style="height: 100%;">
+                            <label style="color: white; font-size: 1.2rem; margin-bottom: 10px; display: block;">¿Qué te pareció este juego?</label>
+                            <textarea id="reviewText" placeholder="Cuéntanos tu experiencia con este título..." style="height: 300px; width: 100%; border-radius: 15px; padding: 20px; font-size: 1rem; border: none;"></textarea>
+                            <button class="btn-submit-main" onclick="guardarResena()" style="margin-top: 20px; width: 100%;">Publicar Reseña</button>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
+
     <script>
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('hidden');
-    }
-
-    // Al cargar la página
-    window.onload = function() {
-        const display = document.getElementById('user-link');
-        const user = localStorage.getItem('usuarioLogueado');
-
-        if (user) {
-            display.innerHTML = `👤 Hola, ${user}`;
-            display.href = "perfil.html"; // Ahora apunta al perfil
-        }
-    };
-
-    function guardarResena() {
-        const texto = document.querySelector('textarea').value;
-        const user = localStorage.getItem('usuarioLogueado') || "Anónimo";
-        const juego = "Persona 5 Royal"; // En el futuro esto puede ser dinámico
-
-        if (texto.trim() === "") {
-            alert("¡No puedes enviar una reseña vacía!");
-            return;
+        function toggleMenu() {
+            const side = document.getElementById('sidebar');
+            if (side) side.classList.toggle('hidden');
         }
 
-        // 1. Obtener reseñas previas o crear un array vacío
-        let resenas = JSON.parse(localStorage.getItem('misResenas')) || [];
+        // --- FUNCIÓN CLAVE: CARGAR DATOS DE LA API ---
+        window.onload = function() {
+            const display = document.getElementById('user-link');
+            const user = localStorage.getItem('usuarioLogueado');
+            
+            // 1. Obtenemos lo que guardamos en InformacionJuego.html
+            const nombreJuego = localStorage.getItem('juegoSeleccionadoNombre');
+            const imagenJuego = localStorage.getItem('juegoSeleccionadoImg');
 
-        // 2. Agregar la nueva reseña con fecha
-        const nuevaResena = {
-            usuario: user,
-            juego: juego,
-            contenido: texto,
-            fecha: new Date().toLocaleDateString()
+            // 2. Inyectamos la imagen y el nombre en el HTML
+            if (nombreJuego && imagenJuego) {
+                document.getElementById('api-game-title').innerText = nombreJuego;
+                document.getElementById('api-game-img').src = imagenJuego;
+            } else {
+                // Si entra directo sin elegir juego, ponemos algo por defecto
+                document.getElementById('api-game-title').innerText = "Selecciona un juego primero";
+                document.getElementById('api-game-img').src = "img/no-image.jpg";
+            }
+
+            // 3. Mostrar usuario en sidebar
+            if (user && display) {
+                display.innerHTML = `👤 Hola, ${user}`;
+                display.href = "perfil.html";
+            }
         };
 
-        resenas.push(nuevaResena);
+        function guardarResena() {
+            const texto = document.getElementById('reviewText').value;
+            const user = localStorage.getItem('usuarioLogueado') || "Usuario Anónimo";
+            const juego = localStorage.getItem('juegoSeleccionadoNombre') || "Juego Desconocido";
 
-        // 3. Guardar de nuevo en LocalStorage
-        localStorage.setItem('misResenas', JSON.stringify(resenas));
+            if (texto.trim() === "") {
+                alert("Por favor, escribe algo antes de enviar.");
+                return;
+            }
 
-        alert('¡Reseña guardada localmente!');
-        document.querySelector('textarea').value = ""; // Limpiar campo
-    }
-</script>
+            // Guardar en el historial de reseñas
+            let resenas = JSON.parse(localStorage.getItem('misResenas')) || [];
+            const nuevaResena = {
+                usuario: user,
+                juego: juego,
+                contenido: texto,
+                fecha: new Date().toLocaleDateString()
+            };
 
-    
-    
+            resenas.push(nuevaResena);
+            localStorage.setItem('misResenas', JSON.stringify(resenas));
+
+            alert(`¡Reseña de ${juego} publicada!`);
+            window.location.href = "perfil.html"; // Redirigir para ver el resultado
+        }
+    </script>
 </body>
 </html>

@@ -3,88 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBrowser - Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: #a0c4ff;
-            padding: 40px;
-            border: 2px solid #000;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        h2 { margin-bottom: 25px; font-weight: normal; }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #000;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .btn-register {
-            background: #000;
-            color: #fff;
-            padding: 12px 35px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            font-size: 16px;
-        }
-        .back-link {
-            display: block;
-            margin-top: 20px;
-            color: #0033aa;
-            text-decoration: underline;
-        }
-    </style>
+    <title>GameBrowser - Registro de Usuario</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Librería oficial de Google -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body>
+<body class="pagina-login-full">
+    <div class="login-wrapper">
+        <header class="login-header">
+            <div class="main-logo-gif">
+                <img src="img/logo1.webp" alt="Avatar">
+            </div>
+            <h1 class="brand-name" style="color: white; margin-top: 10px;">GAMEBROWSER</h1>
+        </header>
 
-<div class="card">
-    <h2>Crear Nueva Cuenta</h2>
-    <form id="registroForm">
-        <input type="text" id="regUser" placeholder="Nombre de usuario" required>
-        <input type="email" id="regEmail" placeholder="Correo electrónico" required>
-        <input type="password" id="regPass" placeholder="Contraseña" required>
-        <input type="password" id="regConfirm" placeholder="Confirmar contraseña" required>
-        <button type="submit" class="btn-register">Registrarse</button>
-    </form>
-    <a href="Loguin.html" class="back-link">¿Ya tienes cuenta? Volver al login</a>
-</div>
+        <main class="login-card-modern">
+            <h2>Crear Nueva Cuenta</h2>
+            
+            <!-- Botón de Registro Rápido con Google -->
+            <div id="g_id_onload"
+                 data-client_id="877139663201-vcshbenc38gisjljuotlo1ilva1j1v1b.apps.googleusercontent.com"
+                 data-callback="handleGoogleRegistration"
+                 data-ux_mode="popup"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signup_with" data-size="large" data-logo_alignment="left" style="margin-bottom: 20px;"></div>
 
-<script>
-    document.getElementById('registroForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const nombre = document.getElementById('regUser').value;
-        const pass = document.getElementById('regPass').value;
-        const confirm = document.getElementById('regConfirm').value;
+            <div class="social-divider">
+                <span>O REGISTRO MANUAL</span>
+            </div>
 
-        if (pass !== confirm) {
-            alert("Las contraseñas no coinciden.");
-            return;
+            <form id="registroForm">
+                <div class="input-group">
+                    <label>Nombre de usuario</label>
+                    <input type="text" id="regUser" placeholder="Ej. Joker123" required>
+                </div>
+                <div class="input-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="regEmail" placeholder="usuario@ues.mx" required>
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPass" placeholder="••••••••" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirmar contraseña</label>
+                    <input type="password" id="regConfirm" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-submit-main">Crear Cuenta Ahora</button>
+                
+                <div class="forgot-link">
+                    <a href="Loguin.html">¿Ya tienes cuenta? Inicia sesión aquí</a>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // 1. MANEJO DE REGISTRO CON GOOGLE
+        function handleGoogleRegistration(response) {
+            const responsePayload = parseJwt(response.credential);
+
+            // Extraemos los datos para "crear" el perfil instantáneamente
+            const nombre = responsePayload.given_name;
+            const email = responsePayload.email;
+            const foto = responsePayload.picture;
+
+            // Guardamos en el sistema local para simular la persistencia de Ingeniería
+            localStorage.setItem('usuarioLogueado', nombre);
+            localStorage.setItem(`${nombre}_email`, email);
+            localStorage.setItem(`${nombre}_foto`, foto);
+
+            alert(`¡Registro exitoso! Bienvenido a GameBrowser, ${nombre}.`);
+            window.location.href = 'index.html';
         }
 
-        const usuarios = JSON.parse(localStorage.getItem('usuariosApp')) || [];
-        usuarios.push({ nombre: nombre, pass: pass });
-        localStorage.setItem('usuariosApp', JSON.stringify(usuarios));
+        // Función para decodificar el Token de Google
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
 
-        alert('¡Cuenta creada! Inicia sesión ahora.');
-        window.location.href = 'Loguin.html';
-    });
-</script>
+        // 2. REGISTRO MANUAL
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('regUser').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            const confirm = document.getElementById('regConfirm').value;
+
+            if (pass !== confirm) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+
+            // Simulación de base de datos en LocalStorage
+            const usuarios = JSON.parse(localStorage.getItem('usuariosApp')) || [];
+            
+            // Verificar si el usuario ya existe
+            if (usuarios.find(u => u.nombre === nombre)) {
+                alert("El nombre de usuario ya está en uso.");
+                return;
+            }
+
+            usuarios.push({ nombre: nombre, email: email, pass: pass });
+            localStorage.setItem('usuariosApp', JSON.stringify(usuarios));
+            
+            // Auto-logueo tras registro exitoso
+            localStorage.setItem('usuarioLogueado', nombre);
+            localStorage.setItem(`${nombre}_email`, email);
+
+            alert('¡Cuenta creada exitosamente! Bienvenido a GameBrowser.');
+            window.location.href = 'index.html';
+        });
+    </script>
 </body>
 </html>

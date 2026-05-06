@@ -3,241 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBrowser - Login</title>
-    <style>
-        :root {
-            --azul-wireframe: #a0c4ff;
-            --negro-boton: #000000;
-            --blanco: #ffffff;
-            --gris-borde: #ccc;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* Contenedor Principal más grande */
-        .browser-container {
-            width: 95%;
-            max-width: 1200px;
-            background-color: var(--blanco);
-            border: 2px solid var(--gris-borde);
-            border-radius: 12px;
-            position: relative;
-            padding: 60px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* Espacio para el GIF */
-        .gif-container {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gif-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        .header-title {
-            text-align: center;
-            font-size: 56px; /* Más grande */
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-        }
-
-        /* Caja de Login */
-        .login-card {
-            background-color: var(--azul-wireframe);
-            width: 100%;
-            max-width: 650px; /* Más ancha */
-            margin: 0 auto;
-            border: 2px solid #000;
-            padding: 50px;
-            border-radius: 15px;
-        }
-
-        .login-card h2 {
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 40px;
-            text-transform: capitalize;
-        }
-
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .form-row label {
-            width: 150px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .form-row input {
-            flex-grow: 1;
-            padding: 12px;
-            border: 2px solid #000;
-            font-size: 18px;
-            border-radius: 5px;
-        }
-
-        .checkbox-row {
-            text-align: center;
-            margin: 25px 0;
-            font-size: 18px;
-        }
-
-        .main-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .btn-black {
-            background-color: var(--negro-boton);
-            color: var(--blanco);
-            padding: 15px 45px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .link-text {
-            color: #0033aa;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-        }
-
-        .line {
-            height: 2px;
-            background: #000;
-            width: 150px;
-        }
-
-        .circle-o {
-            margin: 0 20px;
-            font-size: 30px;
-            font-weight: bold;
-        }
-
-        .secondary-actions {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-        }
-
-        .btn-white {
-            background-color: var(--blanco);
-            border: 2px solid #000;
-            padding: 12px 30px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-    </style>
+    <title>GameBrowser | Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Librería oficial de Google -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body>
+<body class="pagina-login-full">
 
-<div class="browser-container">
-    <div class="gif-container">
-        <img src="img/persona-persona5.gif" alt="Animación">
+    <div class="login-container-flex">
+        <header class="login-header">
+            <div class="main-logo-gif">
+                <img src="img/logo1.webp" alt="Logo GameBrowser">
+            </div>
+            <h1 class="brand-name">GAMEBROWSER</h1>
+            <p style="color: var(--azul-primario); font-weight: bold;">Ingeniería en Software - UES</p>
+        </header>
+
+        <div class="login-card-modern">
+            <!-- Botón de Google -->
+            <div id="g_id_onload"
+                 data-client_id="877139663201-vcshbenc38gisjljuotlo1ilva1j1v1b.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-ux_mode="popup"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+
+            <div class="social-divider">
+                <span>O CON TU CUENTA</span>
+            </div>
+
+            <!-- Formulario Tradicional -->
+            <form id="form-login-local" onsubmit="loginLocal(event)">
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="user-input" placeholder="Usuario o Correo" required>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <input type="password" id="pass-input" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn-submit-main" style="width: 100%;">Entrar al Sistema</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+                ¿No tienes cuenta? <a href="CREARCUENTA.html" style="color: var(--azul-primario);">Regístrate aquí</a>
+            </p>
+        </div>
     </div>
 
-    <h1 class="header-title">GameBrowser</h1>
+    <script>
+        // 1. MANEJO DE RESPUESTA DE GOOGLE
+        function handleCredentialResponse(response) {
+            // Decodificamos el JWT enviado por Google
+            const responsePayload = parseJwt(response.credential);
 
-    <div class="login-card">
-        <h2>inicio de sesión</h2>
-        
-        <form id="loginForm">
-            <div class="form-row">
-                <label for="user">Usuario</label>
-                <input type="text" id="user" required>
-            </div>
-            
-            <div class="form-row">
-                <label for="pass">Contraseña</label>
-                <input type="password" id="pass" required>
-            </div>
+            // Extraemos datos clave
+            const nombreUsuario = responsePayload.given_name;
+            const correoUsuario = responsePayload.email;
+            const fotoUsuario = responsePayload.picture;
 
-            <div class="checkbox-row">
-                <input type="checkbox" id="remember">
-                <label for="remember">Recordar contraseña</label>
-            </div>
+            // Guardamos en LocalStorage para que todo el sitio lo reconozca
+            localStorage.setItem('usuarioLogueado', nombreUsuario);
+            localStorage.setItem(`${nombreUsuario}_email`, correoUsuario);
+            localStorage.setItem(`${nombreUsuario}_foto`, fotoUsuario);
 
-            <div class="main-actions">
-                <button type="submit" class="btn-black">Iniciar Sesion</button>
-                <span class="link-text" onclick="alert('Sistema de recuperación: Revisa tu correo.')">Olvide mi contraseña</span>
-            </div>
+            alert(`¡Bienvenido de nuevo, ${nombreUsuario}!`);
+            window.location.href = "index.html"; // Redirigir al inicio
+        }
 
-            <div class="divider">
-                <div class="line"></div>
-                <span class="circle-o">O</span>
-                <div class="line"></div>
-            </div>
+        // Función para decodificar el Token de Google
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
 
-            <div class="secondary-actions">
-                <button type="button" class="btn-white" onclick="window.location.href='CREARCUENTA.html'">Crear cuenta</button>
-                <button type="button" class="btn-white" onclick="window.location.href='https://accounts.google.com/signin'">Iniciar con google</button>
-            </div>
-        </form>
-    </div>
-</div>
+        // 2. LOGIN LOCAL (TRADICIONAL)
+        function loginLocal(event) {
+            event.preventDefault();
+            const user = document.getElementById('user-input').value;
+            const pass = document.getElementById('pass-input').value;
 
-<script>
-  
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const userValue = document.getElementById('user').value.toLowerCase(); // Convertimos a minúsculas para evitar errores
-    const passValue = document.getElementById('pass').value;
+            // Validación simple para tu proyecto de Ingeniería
+            if (user.length >= 3 && pass.length >= 4) {
+                localStorage.setItem('usuarioLogueado', user);
+                // Si no tiene correo guardado, le asignamos el institucional por defecto
+                if(!localStorage.getItem(`${user}_email`)) {
+                    localStorage.setItem(`${user}_email`, `${user}@ues.mx`);
+                }
+                window.location.href = "index.html";
+            } else {
+                alert("Por favor ingresa credenciales válidas.");
+            }
+        }
 
-    // Lista de usuarios autorizados
-    const usuariosPermitidos = ["admin", "guillermo", "miguel", "fco"];
-    
-    // 1. Verificar si es uno de los usuarios predefinidos
-    // 2. Verificar si es un usuario que se registró recién (buscando en localStorage)
-    const usuariosRegistrados = JSON.parse(localStorage.getItem('usuariosApp')) || [];
-    const usuarioNuevo = usuariosRegistrados.find(u => u.nombre.toLowerCase() === userValue && u.pass === passValue);
-
-    if ((usuariosPermitidos.includes(userValue) && passValue === "1234") || usuarioNuevo) {
-        // Guardamos el nombre para que aparezca en el Sidebar azul [cite: 2]
-        localStorage.setItem('usuarioLogueado', userValue); 
-        
-        alert("¡Bienvenido a GameBrowser!");
-        window.location.href = "index.html"; 
-    } else {
-        alert("Credenciales incorrectas. Prueba con admin, guillermo, miguel o fco (Pass: 1234)");
-    }
-});
-</script>
-
+        // Redirigir si ya está logueado
+        if (localStorage.getItem('usuarioLogueado')) {
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
 </html>
